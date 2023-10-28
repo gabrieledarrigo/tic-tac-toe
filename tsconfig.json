@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "target": "ES2022",
+    "lib": ["ES2023"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "node16",
+    "rootDir": "./src",
+    "moduleResolution": "node16",
+    "allowJs": false,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": false
+  }
+}
