@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id        String    @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  email     String    @db.VarChar() @unique
+  moves     Move[]
+  createdAt DateTime  @db.Timestamptz() @default(now()) @map("created_at")
+  updatedAt DateTime  @db.Timestamptz() @updatedAt @map("updated_at")
+  deletedAt DateTime? @db.Timestamptz() @map("deleted_at")
+
+  @@map("player")
+}
+
+model Game {
+  id        String    @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  ended     Boolean   @db.Boolean() @default(false)
+  moves     Move[]
+  createdAt DateTime  @db.Timestamptz() @default(now()) @map("created_at")
+  updatedAt DateTime  @db.Timestamptz() @updatedAt @map("updated_at")
+  deletedAt DateTime? @db.Timestamptz() @map("deleted_at")
+
+  @@map("game")
+}
+
+model Move {
+  id        String    @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  gameId    String    @db.Uuid() @map("game_id")
+  playerId  String    @db.Uuid() @map("player_id")
+  game      Game      @relation(fields: [gameId], references: [id])
+  player    Player    @relation(fields: [playerId], references: [id])
+  createdAt DateTime  @db.Timestamptz() @default(now()) @map("created_at")
+  updatedAt DateTime  @db.Timestamptz() @updatedAt @map("updated_at")
+  deletedAt DateTime? @db.Timestamptz() @map("deleted_at")
+}
