@@ -7,4 +7,4 @@ const config = {
   rootDir: "./src",
 };
 
-export default config;
+module.exports = config;
