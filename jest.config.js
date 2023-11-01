@@ -5,6 +5,7 @@ const config = {
   restoreMocks: true,
   preset: "ts-jest",
   rootDir: "./src",
+  setupFilesAfterEnv: ["<rootDir>/../test/setup.ts"],
 };
 
 module.exports = config;
