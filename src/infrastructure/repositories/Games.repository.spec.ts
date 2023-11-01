@@ -1,3 +1,4 @@
+import { createMock } from "../../../test/utils";
 import { Game } from "../../domain/entities";
 import { Board } from "../../domain/values/Board";
 import { GameId } from "../../domain/values/GameId";
@@ -10,11 +11,11 @@ jest.mock("uuid", () => ({
 }));
 
 describe("GamesRepository", () => {
-  const prisma = {
+  const prisma = createMock<Prisma>({
     game: {
       create: jest.fn(),
     },
-  } as any as Prisma;
+  });
 
   describe("nextIdentity", () => {
     it("should return a new GameId", () => {

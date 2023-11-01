@@ -6,7 +6,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "module": "node16",
-    "rootDirs": ["./src", "test"],
     "moduleResolution": "node16",
     "allowJs": false,
     "sourceMap": true,
