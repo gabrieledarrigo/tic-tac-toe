@@ -1,5 +1,6 @@
 import { Game } from "../../domain/entities";
 import { Board } from "../../domain/values/Board";
+import { GameId } from "../../domain/values/GameId";
 import { Prisma } from "../Prisma";
 import { GamesRepository } from "./Games.repository";
 import * as uuid from "uuid";
@@ -16,7 +17,7 @@ describe("GamesRepository", () => {
   } as any as Prisma;
 
   describe("nextIdentity", () => {
-    it("should return a new identity", () => {
+    it("should return a new GameId", () => {
       const id = "id";
 
       jest.spyOn(uuid, "v4").mockReturnValue(id);
@@ -24,20 +25,20 @@ describe("GamesRepository", () => {
       const games = new GamesRepository(prisma);
       const identity = games.nextIdentity();
 
-      expect(identity).toEqual(id);
+      expect(identity).toEqual(GameId.of(id));
     });
   });
 
   describe("create", () => {
     it("should persist a new game", async () => {
-      const game = new Game("1", Board.of());
+      const game = new Game(GameId.of("id"), Board.of());
 
       const games = new GamesRepository(prisma);
       games.persist(game);
 
       expect(prisma.game.create).toHaveBeenCalledWith({
         data: {
-          id: "1",
+          id: "id",
         },
       });
     });

@@ -1,3 +1,3 @@
-export interface WithNextIdentity {
-  nextIdentity(): string;
+export interface WithNextIdentity<ID> {
+  nextIdentity(): ID;
 }

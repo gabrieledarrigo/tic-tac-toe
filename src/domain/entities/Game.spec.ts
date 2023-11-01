@@ -1,21 +1,14 @@
 import { NewGameCreated } from "../events/NewGameCreated";
 import { Board } from "../values/Board";
+import { GameId } from "../values/GameId";
 import { Game } from "./Game";
 
 describe("Game", () => {
-  beforeAll(() => {
-    jest.useFakeTimers().setSystemTime(new Date());
-  });
-
-  afterAll(() => {
-    jest.useRealTimers();
-  });
-
-  it("given an id and a board, then it should publish a NewGameCreated event", () => {
-    const id = "id";
+  it("given an id and a Board, then it should publish a NewGameCreated event", () => {
+    const id = GameId.of("id");
     const board = Board.of();
 
-    const game = new Game("id", board);
+    const game = new Game(id, board);
 
     console.log(game);
 
