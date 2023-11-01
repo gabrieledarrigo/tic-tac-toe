@@ -6,7 +6,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "module": "node16",
-    "rootDir": "./src",
+    "rootDirs": ["./src", "test"],
     "moduleResolution": "node16",
     "allowJs": false,
     "sourceMap": true,
@@ -15,6 +15,5 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": false
-  },
-  "exclude": ["test"]
+  }
 }
