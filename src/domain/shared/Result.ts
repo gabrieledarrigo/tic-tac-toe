@@ -9,6 +9,10 @@ export class Failure {
     return true;
   }
 
+  public unwrap(): never {
+    throw this.error;
+  }
+
   public static of(error: Error): Failure {
     return new Failure(error);
   }
@@ -23,6 +27,10 @@ export class Success<T> {
 
   public isFailure(): this is Failure {
     return false;
+  }
+
+  public unwrap(): T {
+    return this.value;
   }
 
   public static of<T>(value: T): Success<T> {

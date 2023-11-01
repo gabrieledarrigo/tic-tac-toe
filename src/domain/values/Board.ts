@@ -1,4 +1,4 @@
-import { Failure, Result, Success } from "../../types";
+import { Failure, Result, Success } from "../shared/Result";
 
 export enum Mark {
   X = "X",
