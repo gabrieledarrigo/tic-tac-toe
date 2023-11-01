@@ -10,8 +10,6 @@ describe("Game", () => {
 
     const game = new Game(id, board);
 
-    console.log(game);
-
     expect(game.getDomainEvents()).toContainEqual(
       new NewGameCreated(id, board)
     );

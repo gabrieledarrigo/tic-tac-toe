@@ -19,21 +19,21 @@ describe("GamesRepository", () => {
   describe("nextIdentity", () => {
     it("should return a new GameId", () => {
       const id = "id";
-
       jest.spyOn(uuid, "v4").mockReturnValue(id);
 
       const games = new GamesRepository(prisma);
+
       const identity = games.nextIdentity();
 
       expect(identity).toEqual(GameId.of(id));
     });
   });
 
-  describe("create", () => {
+  describe("persist", () => {
     it("should persist a new game", async () => {
       const game = new Game(GameId.of("id"), Board.of());
-
       const games = new GamesRepository(prisma);
+
       games.persist(game);
 
       expect(prisma.game.create).toHaveBeenCalledWith({
