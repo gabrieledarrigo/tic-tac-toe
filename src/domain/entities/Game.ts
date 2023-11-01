@@ -9,6 +9,6 @@ export class Game extends AggregateRoot {
 
   constructor(public readonly id: GameId, public readonly board: Board) {
     super();
-    this.apply(new NewGameCreated(id, board));
+    this.apply(new NewGameCreated(id));
   }
 }

@@ -1,16 +1,22 @@
+import { EventBus } from "@nestjs/cqrs";
 import { Game } from "../../domain/entities";
-import { Games } from "../../domain/repositories/Games";
 import { Board } from "../../domain/values/Board";
 import { GameId } from "../../domain/values/GameId";
 import { GamesRepository } from "../../infrastructure/repositories/Games.repository";
 import { NewGame, NewGameCommandHandler } from "./NewGame.command";
+import { NewGameCreated } from "../../domain/events/NewGameCreated";
+import { createMock } from "../../../test/utils";
 
 describe("NewGameCommandHandler", () => {
   describe("execute", () => {
-    const games = {
+    const games = createMock<GamesRepository>({
       nextIdentity: jest.fn(),
       persist: jest.fn(),
-    } as any as GamesRepository;
+    });
+
+    const eventBus = createMock<EventBus>({
+      publishAll: jest.fn(),
+    });
 
     const gameId = GameId.of("id");
 
@@ -19,7 +25,7 @@ describe("NewGameCommandHandler", () => {
     });
 
     it("should create and persist a new Game", async () => {
-      const commandHandler = new NewGameCommandHandler(games);
+      const commandHandler = new NewGameCommandHandler(games, eventBus);
 
       await commandHandler.execute(new NewGame());
 
@@ -27,8 +33,18 @@ describe("NewGameCommandHandler", () => {
       expect(games.persist).toHaveBeenCalledWith(new Game(gameId, Board.of()));
     });
 
+    it("should publish all Game domain events", async () => {
+      const commandHandler = new NewGameCommandHandler(games, eventBus);
+
+      await commandHandler.execute(new NewGame());
+
+      expect(eventBus.publishAll).toHaveBeenCalledWith([
+        new NewGameCreated(gameId),
+      ]);
+    });
+
     it("should return the new GameId", async () => {
-      const commandHandler = new NewGameCommandHandler(games);
+      const commandHandler = new NewGameCommandHandler(games, eventBus);
 
       const actual = await commandHandler.execute(new NewGame());
 
