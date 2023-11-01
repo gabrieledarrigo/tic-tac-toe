@@ -1,8 +1,8 @@
 const config = {
   clearMocks: true,
-  resetMocks: false,
-  resetModules: false,
-  restoreMocks: false,
+  resetMocks: true,
+  resetModules: true,
+  restoreMocks: true,
   preset: "ts-jest",
   rootDir: "./src",
 };
