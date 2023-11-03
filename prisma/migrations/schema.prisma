@@ -13,6 +13,8 @@ datasource db {
 model Player {
   id        String    @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
   email     String    @db.VarChar() @unique
+  gamesAsPlayerOne    Game[]    @relation(name: "player_one")
+  gamesAsPlayerTwo    Game[]    @relation(name: "player_two")
   moves     Move[]
   createdAt DateTime  @db.Timestamptz() @default(now()) @map("created_at")
   updatedAt DateTime  @db.Timestamptz() @updatedAt @map("updated_at")
@@ -24,6 +26,10 @@ model Player {
 model Game {
   id        String    @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
   ended     Boolean   @db.Boolean() @default(false)
+  playerOneId String? @db.Uuid() @map("player_one_id")
+  playerTwoId String? @db.Uuid() @map("player_two_id")
+  playerOne Player?   @relation(name: "player_one", fields: [playerOneId], references: [id])
+  playerTwo Player?   @relation(name: "player_two", fields: [playerTwoId], references: [id])
   moves     Move[]
   createdAt DateTime  @db.Timestamptz() @default(now()) @map("created_at")
   updatedAt DateTime  @db.Timestamptz() @updatedAt @map("updated_at")

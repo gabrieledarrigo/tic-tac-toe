@@ -1,7 +1,8 @@
 import { createMock } from "../../../test/utils";
-import { Game } from "../../domain/entities";
+import { Game, Player } from "../../domain/entities";
 import { Board } from "../../domain/values/Board";
 import { GameId } from "../../domain/values/GameId";
+import { PlayerId } from "../../domain/values/PlayerId";
 import { Prisma } from "../Prisma";
 import { GamesRepository } from "./Games.repository";
 import * as uuid from "uuid";
@@ -23,7 +24,6 @@ describe("GamesRepository", () => {
       jest.spyOn(uuid, "v4").mockReturnValue(id);
 
       const games = new GamesRepository(prisma);
-
       const identity = games.nextIdentity();
 
       expect(identity).toEqual(GameId.of(id));
@@ -31,15 +31,19 @@ describe("GamesRepository", () => {
   });
 
   describe("persist", () => {
-    it("should persist a new game", async () => {
-      const game = new Game(GameId.of("id"), Board.of());
-      const games = new GamesRepository(prisma);
+    it("should persist a new Game", async () => {
+      const playerOne = new Player(PlayerId.of("id"), "player.one@example.com");
+      const playerTwo = new Player(PlayerId.of("id"), "player.one@example.com");
+      const game = new Game(GameId.of("id"), Board.of(), playerOne, playerTwo);
 
+      const games = new GamesRepository(prisma);
       games.persist(game);
 
       expect(prisma.game.create).toHaveBeenCalledWith({
         data: {
           id: "id",
+          playerOneId: playerOne.id.value,
+          playerTwoId: playerTwo?.id.value,
         },
       });
     });

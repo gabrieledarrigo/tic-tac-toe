@@ -5,9 +5,12 @@ import { NewGameCreated } from "../events/NewGameCreated";
 import { GameId } from "../values/GameId";
 
 export class Game extends AggregateRoot {
-  private currentPlayer?: Player;
-
-  constructor(public readonly id: GameId, public readonly board: Board) {
+  constructor(
+    public readonly id: GameId,
+    public readonly board: Board,
+    public readonly playerOne?: Player,
+    public readonly playerTwo?: Player
+  ) {
     super();
     this.apply(new NewGameCreated(id));
   }
