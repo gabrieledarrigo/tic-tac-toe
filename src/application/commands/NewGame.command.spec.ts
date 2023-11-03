@@ -22,6 +22,7 @@ describe("NewGameCommandHandler", () => {
 
     beforeEach(() => {
       jest.spyOn(games, "nextIdentity").mockReturnValue(gameId);
+      jest.spyOn(Game, "new");
     });
 
     it("should create and persist a new Game", async () => {
@@ -30,7 +31,8 @@ describe("NewGameCommandHandler", () => {
       await commandHandler.execute(new NewGame());
 
       expect(games.nextIdentity).toHaveBeenCalled();
-      expect(games.persist).toHaveBeenCalledWith(new Game(gameId, Board.of()));
+      expect(Game.new).toHaveBeenCalledWith(gameId, Board.of());
+      expect(games.persist).toHaveBeenCalledWith(Game.new(gameId, Board.of()));
     });
 
     it("should publish all Game domain events", async () => {

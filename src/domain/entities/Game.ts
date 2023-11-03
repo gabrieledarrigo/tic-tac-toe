@@ -5,13 +5,24 @@ import { NewGameCreated } from "../events/NewGameCreated";
 import { GameId } from "../values/GameId";
 
 export class Game extends AggregateRoot {
-  constructor(
+  public constructor(
     public readonly id: GameId,
     public readonly board: Board,
     public readonly playerOne?: Player,
     public readonly playerTwo?: Player
   ) {
     super();
-    this.apply(new NewGameCreated(id));
+  }
+
+  public static new(
+    id: GameId,
+    board: Board,
+    playerOne?: Player,
+    playerTwo?: Player
+  ): Game {
+    const game = new Game(id, board, playerOne, playerTwo);
+    game.apply(new NewGameCreated(id));
+
+    return game;
   }
 }

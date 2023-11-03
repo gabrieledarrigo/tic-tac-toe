@@ -20,7 +20,7 @@ export class NewGameCommandHandler
 
   public async execute(_command: NewGame): Promise<Result<GameId>> {
     const id = this.games.nextIdentity();
-    const game = new Game(id, Board.of());
+    const game = Game.new(id, Board.of());
 
     await this.games.persist(game);
     this.eventBus.publishAll(game.getDomainEvents());
