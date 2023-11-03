@@ -17,8 +17,8 @@ export class GamesRepository implements Games {
     await this.prisma.game.create({
       data: {
         id: game.id.value,
-        playerOneId: game.playerOne?.id.value,
-        playerTwoId: game.playerTwo?.id.value,
+        playerOneId: game.getPlayerOne()?.id.value,
+        playerTwoId: game.getPlayerTwo()?.id.value,
       },
     });
   }
