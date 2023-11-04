@@ -32,9 +32,15 @@ describe("GamesRepository", () => {
 
   describe("persist", () => {
     it("should persist a new Game", async () => {
-      const playerOne = new Player(PlayerId.of("id"), "player.one@example.com");
-      const playerTwo = new Player(PlayerId.of("id"), "player.one@example.com");
-      const game = new Game(GameId.of("id"), Board.of(), playerOne, playerTwo);
+      const playerOneId = PlayerId.of("playerOneId");
+      const playerTwoId = PlayerId.of("playerTwoId");
+
+      const game = new Game(
+        GameId.of("id"),
+        Board.of(),
+        playerOneId,
+        playerTwoId
+      );
 
       const games = new GamesRepository(prisma);
       games.persist(game);
@@ -42,8 +48,8 @@ describe("GamesRepository", () => {
       expect(prisma.game.create).toHaveBeenCalledWith({
         data: {
           id: "id",
-          playerOneId: playerOne.id.value,
-          playerTwoId: playerTwo?.id.value,
+          playerOneId: playerOneId.value,
+          playerTwoId: playerTwoId?.value,
         },
       });
     });

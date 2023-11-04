@@ -1,4 +1,3 @@
-import { Player } from ".";
 import { NewGameCreated } from "../events/NewGameCreated";
 import { PlayerJoined } from "../events/PlayerJoined";
 import { Board } from "../values/Board";
@@ -19,51 +18,36 @@ describe("Game", () => {
   });
 
   describe("playerJoin", () => {
-    it("given a player, when joined, then it should add the player to the game", () => {
+    it("given a PlayerId, when joined, then it should add the it to the game", () => {
       const id = GameId.of("id");
       const board = Board.of();
 
-      const playerOne = new Player(
-        PlayerId.of("playerOneId"),
-        "player.one@example.com"
-      );
-      const playerTwo = new Player(
-        PlayerId.of("playerTwoId"),
-        "player.two@example.com"
-      );
+      const playerOneId = PlayerId.of("playerOneId");
+      const playerTwoId = PlayerId.of("playerTwoId");
 
       const game = new Game(id, board);
-      game.playerJoin(playerOne);
+      game.playerJoin(playerOneId);
 
-      expect(game.getPlayerOne()).toEqual(playerOne);
+      expect(game.getPlayerOneId()).toEqual(playerOneId);
 
-      game.playerJoin(playerTwo);
+      game.playerJoin(playerTwoId);
 
-      expect(game.getPlayerTwo()).toEqual(playerTwo);
+      expect(game.getPlayerTwoId()).toEqual(playerTwoId);
     });
 
     it("given a player, when joined, then it should not add the player to the game if the game is full", () => {
       const id = GameId.of("id");
       const board = Board.of();
 
-      const playerOne = new Player(
-        PlayerId.of("playerOneId"),
-        "player.one@example.com"
-      );
-      const playerTwo = new Player(
-        PlayerId.of("playerTwoId"),
-        "player.two@example.com"
-      );
-      const playerThree = new Player(
-        PlayerId.of("playerTwoId"),
-        "player.two@example.com"
-      );
+      const playerOneId = PlayerId.of("playerOneId");
+      const playerTwoId = PlayerId.of("playerTwoId");
+      const playerThreeId = PlayerId.of("playerThreeId");
 
       const game = new Game(id, board);
-      game.playerJoin(playerOne);
-      game.playerJoin(playerTwo);
+      game.playerJoin(playerOneId);
+      game.playerJoin(playerTwoId);
 
-      const actual = game.playerJoin(playerThree);
+      const actual = game.playerJoin(playerThreeId);
 
       expect(actual.isFailure()).toBeTruthy();
     });
@@ -71,13 +55,13 @@ describe("Game", () => {
     it("given a player, when joined, then it should publish a PlayerJoined event", () => {
       const id = GameId.of("id");
       const board = Board.of();
-      const player = new Player(PlayerId.of("playerId"), "player@example.com");
+      const playerOneId = PlayerId.of("playerOneId");
 
       const game = new Game(id, board);
-      game.playerJoin(player);
+      game.playerJoin(playerOneId);
 
       expect(game.getDomainEvents()).toContainEqual(
-        new PlayerJoined(game.id, player.id)
+        new PlayerJoined(game.id, playerOneId)
       );
     });
   });

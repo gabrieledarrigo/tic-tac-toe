@@ -1,10 +1,9 @@
 import {
-  GameWithPlayers,
+  Game as RepositoryGame,
   Player as RepositoryPlayer,
 } from "../repositories/types";
 import { GameFactory } from "./Game.factory";
 import { Game } from "../../domain/entities/Game";
-import { Player } from "../../domain/entities/Player";
 import { GameId } from "../../domain/values/GameId";
 import { Board } from "../../domain/values/Board";
 import { PlayerId } from "../../domain/values/PlayerId";
@@ -12,11 +11,11 @@ import { createMock } from "../../../test/utils";
 
 describe("GameFactory", () => {
   describe("create", () => {
-    it("should create a new Game with no Players", () => {
-      const gameWithPlayers = createMock<GameWithPlayers>({
+    it("should create a new Game with no PlayerIds", () => {
+      const gameWithPlayers = createMock<RepositoryGame>({
         id: "gameId",
-        playerOne: null,
-        playerTwo: null,
+        playerOneId: null,
+        playerTwoId: null,
       });
 
       const expectedGame = new Game(
@@ -31,37 +30,21 @@ describe("GameFactory", () => {
       expect(game).toEqual(expectedGame);
     });
 
-    it("should create a new Game with two Players", () => {
-      const playerOne = createMock<RepositoryPlayer>({
-        id: "playerOneId",
-        email: "player.one@example.com",
-      });
-
-      const playerTwo = createMock<RepositoryPlayer>({
-        id: "playerTwoId",
-        email: "player.two@example.com",
-      });
-
-      const gameWithPlayers = createMock<GameWithPlayers>({
+    it("should create a new Game with both PlayerIds", () => {
+      const gameWithPlayers = createMock<RepositoryGame>({
         id: "gameId",
-        playerOne,
-        playerTwo,
+        playerOneId: "playerOneId",
+        playerTwoId: "playerTwoId",
       });
 
-      const expectedPlayerOne = new Player(
-        PlayerId.of(playerOne.id),
-        playerOne.email
-      );
-      const expectedPlayerTwo = new Player(
-        PlayerId.of(playerTwo!.id),
-        playerTwo.email
-      );
+      const playerOneId = PlayerId.of("playerOneId");
+      const playerTwoId = PlayerId.of("playerTwoId");
 
       const expectedGame = new Game(
         GameId.of(gameWithPlayers.id),
         Board.of(),
-        expectedPlayerOne,
-        expectedPlayerTwo
+        playerOneId,
+        playerTwoId
       );
 
       const game = GameFactory.create(gameWithPlayers);
@@ -69,26 +52,18 @@ describe("GameFactory", () => {
       expect(game).toEqual(expectedGame);
     });
 
-    it("should create a new Game with only Player one", () => {
-      const playerOne = createMock<RepositoryPlayer>({
-        id: "playerOneId",
-        email: "player.one@example.com",
-      });
-
-      const gameWithPlayers = createMock<GameWithPlayers>({
+    it("should create a new Game with only PlayerId one", () => {
+      const gameWithPlayers = createMock<RepositoryGame>({
         id: "gameId",
-        playerOne,
+        playerOneId: "playerOneId",
       });
 
-      const expectedPlayerOne = new Player(
-        PlayerId.of(playerOne.id),
-        playerOne.email
-      );
+      const playerOneId = PlayerId.of("playerOneId");
 
       const expectedGame = new Game(
         GameId.of(gameWithPlayers.id),
         Board.of(),
-        expectedPlayerOne,
+        playerOneId,
         undefined
       );
 
@@ -97,27 +72,19 @@ describe("GameFactory", () => {
       expect(game).toEqual(expectedGame);
     });
 
-    it("should create a new Game with only Player two", () => {
-      const playerTwo = createMock<RepositoryPlayer>({
-        id: "playerTwoId",
-        email: "player.two@example.com",
-      });
-
-      const gameWithPlayers = createMock<GameWithPlayers>({
+    it("should create a new Game with only PlayerId two", () => {
+      const gameWithPlayers = createMock<RepositoryGame>({
         id: "gameId",
-        playerTwo,
+        playerTwoId: "playerTwoId",
       });
 
-      const expectedPlayerTwo = new Player(
-        PlayerId.of(playerTwo!.id),
-        playerTwo.email
-      );
+      const playerTwoId = PlayerId.of("playerTwoId");
 
       const expectedGame = new Game(
         GameId.of(gameWithPlayers.id),
         Board.of(),
         undefined,
-        expectedPlayerTwo
+        playerTwoId
       );
 
       const game = GameFactory.create(gameWithPlayers);
