@@ -30,6 +30,13 @@ export class Game extends AggregateRoot {
 
   public playerJoin(playerId: PlayerId): Result<void> {
     if (this.isFull()) {
+      if (
+        this.playerOneId?.equals(playerId) ||
+        this.playerTwoId?.equals(playerId)
+      ) {
+        return Success.of(undefined);
+      }
+
       return Failure.of(new Error("Game is full"));
     }
 

@@ -18,7 +18,7 @@ describe("Game", () => {
   });
 
   describe("playerJoin", () => {
-    it("given a PlayerId, when joined, then it should add the it to the game", () => {
+    it("given a PlayerId, when joined, then it should add it to the game", () => {
       const id = GameId.of("id");
       const board = Board.of();
 
@@ -33,6 +33,36 @@ describe("Game", () => {
       game.playerJoin(playerTwoId);
 
       expect(game.getPlayerTwoId()).toEqual(playerTwoId);
+    });
+
+    it("given a PlayerId, when joined, then it should not add the player to the game if the player is already in the game as the player one", () => {
+      const id = GameId.of("id");
+      const board = Board.of();
+
+      const playerOneId = PlayerId.of("playerOneId");
+      const playerTwoId = PlayerId.of("playerTwoId");
+
+      const game = new Game(id, board);
+      game.playerJoin(playerOneId);
+      game.playerJoin(playerTwoId);
+
+      const actual = game.playerJoin(playerTwoId);
+
+      expect(actual.isSuccess()).toBeTruthy();
+    });
+
+    it("given a PlayerId, when joined, then it should not add the player to the game if the player is already in the game as the player two", () => {
+      const id = GameId.of("id");
+      const board = Board.of();
+
+      const playerOneId = PlayerId.of("playerOneId");
+
+      const game = new Game(id, board);
+      game.playerJoin(playerOneId);
+
+      const actual = game.playerJoin(playerOneId);
+
+      expect(actual.isSuccess()).toBeTruthy();
     });
 
     it("given a player, when joined, then it should not add the player to the game if the game is full", () => {
