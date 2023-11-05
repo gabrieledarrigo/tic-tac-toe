@@ -1,6 +1,5 @@
 import { createMock } from "../../../test/utils";
 import { Game } from "../../domain/entities";
-import { Board } from "../../domain/values/Board";
 import { GameId } from "../../domain/values/GameId";
 import { PlayerId } from "../../domain/values/PlayerId";
 import { Prisma } from "../Prisma";
@@ -44,7 +43,6 @@ describe("GamesRepository", () => {
 
       const expectedGame = new Game(
         GameId.of("id"),
-        Board.of(),
         PlayerId.of("playerOneId"),
         PlayerId.of("playerTwoId")
       );
@@ -75,12 +73,7 @@ describe("GamesRepository", () => {
       const playerOneId = PlayerId.of("playerOneId");
       const playerTwoId = PlayerId.of("playerTwoId");
 
-      const game = new Game(
-        GameId.of("id"),
-        Board.of(),
-        playerOneId,
-        playerTwoId
-      );
+      const game = new Game(GameId.of("id"), playerOneId, playerTwoId);
 
       const games = new GamesRepository(prisma);
       games.persist(game);

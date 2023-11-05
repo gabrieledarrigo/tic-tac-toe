@@ -44,7 +44,15 @@ model Move {
   playerId  String    @db.Uuid() @map("player_id")
   game      Game      @relation(fields: [gameId], references: [id])
   player    Player    @relation(fields: [playerId], references: [id])
+  row       Int       @db.SmallInt()
+  column    Int       @db.SmallInt()
+  mark      Mark?
   createdAt DateTime  @db.Timestamptz() @default(now()) @map("created_at")
   updatedAt DateTime  @db.Timestamptz() @updatedAt @map("updated_at")
   deletedAt DateTime? @db.Timestamptz() @map("deleted_at")
+}
+
+enum Mark {
+  X
+  O
 }

@@ -14,6 +14,6 @@ export class GameFactory {
       ? PlayerId.of(game.playerTwoId)
       : undefined;
 
-    return new Game(GameId.of(game.id), Board.of(), playerOneId, playerTwoId);
+    return new Game(GameId.of(game.id), playerOneId, playerTwoId);
   }
 }

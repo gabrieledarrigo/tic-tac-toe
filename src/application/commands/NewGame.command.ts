@@ -2,7 +2,6 @@ import { CommandHandler, EventBus, ICommandHandler } from "@nestjs/cqrs";
 import { Game } from "../../domain/entities";
 import { Result, Success } from "../../domain/shared/Result";
 import { GameId } from "../../domain/values/GameId";
-import { Board } from "../../domain/values/Board";
 import { GamesRepository } from "../../infrastructure/repositories/Games.repository";
 
 export class NewGame {
@@ -20,7 +19,7 @@ export class NewGameCommandHandler
 
   public async execute(_command: NewGame): Promise<Result<GameId>> {
     const id = this.games.nextIdentity();
-    const game = Game.new(id, Board.of());
+    const game = Game.new(id);
 
     await this.games.persist(game);
     this.eventBus.publishAll(game.getDomainEvents());

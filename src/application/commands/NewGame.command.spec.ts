@@ -1,6 +1,5 @@
 import { EventBus } from "@nestjs/cqrs";
 import { Game } from "../../domain/entities";
-import { Board } from "../../domain/values/Board";
 import { GameId } from "../../domain/values/GameId";
 import { GamesRepository } from "../../infrastructure/repositories/Games.repository";
 import { NewGame, NewGameCommandHandler } from "./NewGame.command";
@@ -31,8 +30,8 @@ describe("NewGameCommandHandler", () => {
       await commandHandler.execute(new NewGame());
 
       expect(games.nextIdentity).toHaveBeenCalled();
-      expect(Game.new).toHaveBeenCalledWith(gameId, Board.of());
-      expect(games.persist).toHaveBeenCalledWith(Game.new(gameId, Board.of()));
+      expect(Game.new).toHaveBeenCalledWith(gameId);
+      expect(games.persist).toHaveBeenCalledWith(Game.new(gameId));
     });
 
     it("should publish all Game domain events", async () => {

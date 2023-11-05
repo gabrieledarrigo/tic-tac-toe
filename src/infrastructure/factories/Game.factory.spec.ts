@@ -2,7 +2,6 @@ import { Game as RepositoryGame } from "../repositories/types";
 import { GameFactory } from "./Game.factory";
 import { Game } from "../../domain/entities/Game";
 import { GameId } from "../../domain/values/GameId";
-import { Board } from "../../domain/values/Board";
 import { PlayerId } from "../../domain/values/PlayerId";
 import { createMock } from "../../../test/utils";
 
@@ -17,7 +16,6 @@ describe("GameFactory", () => {
 
       const expectedGame = new Game(
         GameId.of(gameWithPlayers.id),
-        Board.of(),
         undefined,
         undefined
       );
@@ -39,7 +37,6 @@ describe("GameFactory", () => {
 
       const expectedGame = new Game(
         GameId.of(gameWithPlayers.id),
-        Board.of(),
         playerOneId,
         playerTwoId
       );
@@ -59,7 +56,6 @@ describe("GameFactory", () => {
 
       const expectedGame = new Game(
         GameId.of(gameWithPlayers.id),
-        Board.of(),
         playerOneId,
         undefined
       );
@@ -79,7 +75,6 @@ describe("GameFactory", () => {
 
       const expectedGame = new Game(
         GameId.of(gameWithPlayers.id),
-        Board.of(),
         undefined,
         playerTwoId
       );

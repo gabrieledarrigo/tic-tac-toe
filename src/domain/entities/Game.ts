@@ -1,28 +1,28 @@
-import { Board } from "../values/Board";
 import { AggregateRoot } from "../shared/AggregateRoot";
 import { NewGameCreated } from "../events/NewGameCreated";
 import { GameId } from "../values/GameId";
 import { PlayerJoined } from "../events/PlayerJoined";
 import { Failure, Result, Success } from "../shared/Result";
 import { PlayerId } from "../values/PlayerId";
+import { Move } from "./Move";
 
 export class Game extends AggregateRoot {
   public constructor(
     public readonly id: GameId,
-    public readonly board: Board,
     private playerOneId?: PlayerId,
-    private playerTwoId?: PlayerId
+    private playerTwoId?: PlayerId,
+    private readonly moves: Move[] = []
   ) {
     super();
   }
 
   public static new(
     id: GameId,
-    board: Board,
     playerOneId?: PlayerId,
-    playerTwoId?: PlayerId
+    playerTwoId?: PlayerId,
+    moves: Move[] = []
   ): Game {
-    const game = new Game(id, board, playerOneId, playerTwoId);
+    const game = new Game(id, playerOneId, playerTwoId, moves);
     game.apply(new NewGameCreated(id));
 
     return game;
