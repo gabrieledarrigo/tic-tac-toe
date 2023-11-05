@@ -1,7 +1,4 @@
-import {
-  Game as RepositoryGame,
-  Player as RepositoryPlayer,
-} from "../repositories/types";
+import { Game as RepositoryGame } from "../repositories/types";
 import { GameFactory } from "./Game.factory";
 import { Game } from "../../domain/entities/Game";
 import { GameId } from "../../domain/values/GameId";
