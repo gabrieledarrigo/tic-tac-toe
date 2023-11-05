@@ -19,10 +19,10 @@ export class Game extends AggregateRoot {
   public static new(
     id: GameId,
     board: Board,
-    playerOne?: PlayerId,
-    playerTwo?: PlayerId
+    playerOneId?: PlayerId,
+    playerTwoId?: PlayerId
   ): Game {
-    const game = new Game(id, board, playerOne, playerTwo);
+    const game = new Game(id, board, playerOneId, playerTwoId);
     game.apply(new NewGameCreated(id));
 
     return game;

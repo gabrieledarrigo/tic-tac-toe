@@ -1,6 +1,6 @@
 import { createMock } from "../../../test/utils";
 import { Game } from "../../domain/entities";
-import { Failure, Success } from "../../domain/shared/Result";
+import { Success } from "../../domain/shared/Result";
 import { GameId } from "../../domain/values/GameId";
 import { PlayerId } from "../../domain/values/PlayerId";
 import { GamesRepository } from "../../infrastructure/repositories/Games.repository";
@@ -21,7 +21,7 @@ describe("JoinGameCommandHandler", () => {
         playerJoin: jest.fn(),
       });
 
-      jest.spyOn(games, "byId").mockResolvedValue(Success.of(game));
+      jest.spyOn(games, "byId").mockResolvedValue(game);
 
       const commandHandler = new JoinGameCommandHandler(games);
 
@@ -31,9 +31,7 @@ describe("JoinGameCommandHandler", () => {
     });
 
     it("should return a failure when the Game does not exist", async () => {
-      jest
-        .spyOn(games, "byId")
-        .mockResolvedValue(Failure.of(new Error("Game not found")));
+      jest.spyOn(games, "byId").mockResolvedValue(null);
 
       const commandHandler = new JoinGameCommandHandler(games);
 
@@ -47,7 +45,7 @@ describe("JoinGameCommandHandler", () => {
         playerJoin: jest.fn(),
       });
 
-      jest.spyOn(games, "byId").mockResolvedValue(Success.of(game));
+      jest.spyOn(games, "byId").mockResolvedValue(game);
 
       const commandHandler = new JoinGameCommandHandler(games);
 

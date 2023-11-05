@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { Result } from "../../domain/shared/Result";
+import { Failure, Result } from "../../domain/shared/Result";
 import { GameId } from "../../domain/values/GameId";
 import { PlayerId } from "../../domain/values/PlayerId";
 import { GamesRepository } from "../../infrastructure/repositories/Games.repository";
@@ -18,13 +18,13 @@ export class JoinGameCommandHandler
   constructor(private readonly games: GamesRepository) {}
 
   public async execute(command: JoinGame): Promise<Result<void>> {
-    const result = await this.games.byId(command.gameId);
+    const game = await this.games.byId(command.gameId);
 
-    if (result.isFailure()) {
-      return result;
+    if (!game) {
+      return Failure.of(
+        new Error(`Game with id ${command.gameId.value} not found`)
+      );
     }
-
-    const game = result.unwrap();
 
     return game.playerJoin(command.playerId);
   }

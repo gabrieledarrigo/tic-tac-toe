@@ -33,7 +33,7 @@ describe("GamesRepository", () => {
   });
 
   describe("byId", () => {
-    it("should return a Success with the Game when it exists", async () => {
+    it("should return the Game when it exists", async () => {
       const game = createMock<RepositoryGame>({
         id: "id",
         playerOneId: "playerOneId",
@@ -57,17 +57,16 @@ describe("GamesRepository", () => {
           id: "id",
         },
       });
-      expect(actual.isSuccess()).toBe(true);
-      expect(actual.unwrap()).toEqual(expectedGame);
+      expect(actual).toEqual(expectedGame);
     });
 
-    it("should return a Failure when the Game does not exist", async () => {
+    it("should return a null value when the Game does not exist", async () => {
       jest.spyOn(prisma.game, "findUnique").mockResolvedValue(null);
 
       const games = new GamesRepository(prisma);
       const actual = await games.byId(GameId.of("id"));
 
-      expect(actual.isFailure()).toBe(true);
+      expect(actual).toBeNull();
     });
   });
 

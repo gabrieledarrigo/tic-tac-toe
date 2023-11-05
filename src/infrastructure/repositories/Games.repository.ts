@@ -5,7 +5,6 @@ import { Game } from "../../domain/entities";
 import * as uuid from "uuid";
 import { GameId } from "../../domain/values/GameId";
 import { GameFactory } from "../factories/Game.factory";
-import { Failure, Result, Success } from "../../domain/shared/Result";
 
 @Injectable()
 export class GamesRepository implements Games {
@@ -15,7 +14,7 @@ export class GamesRepository implements Games {
     return GameId.of(uuid.v4());
   }
 
-  public async byId(id: GameId): Promise<Result<Game>> {
+  public async byId(id: GameId): Promise<Game | null> {
     const game = await this.prisma.game.findUnique({
       where: {
         id: id.value,
@@ -23,10 +22,10 @@ export class GamesRepository implements Games {
     });
 
     if (!game) {
-      return Failure.of(new Error(`Cannot find Game with id: ${id.value}`));
+      return null;
     }
 
-    return Success.of(GameFactory.create(game));
+    return GameFactory.create(game);
   }
 
   public async persist(game: Game): Promise<void> {
