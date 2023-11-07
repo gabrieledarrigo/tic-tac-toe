@@ -13,6 +13,10 @@ export class Failure {
     throw this.error;
   }
 
+  public unwrapOrElse<O>(fn: (error: Error) => O): O {
+    return fn(this.error);
+  }
+
   public static of(error: Error): Failure {
     return new Failure(error);
   }
@@ -31,6 +35,10 @@ export class Success<T> {
 
   public unwrap(): T {
     return this.value;
+  }
+
+  public unwrapOrElse<O>(_fn: (error: Error) => O): T {
+    return this.unwrap();
   }
 
   public static of<T>(value: T): Success<T> {
