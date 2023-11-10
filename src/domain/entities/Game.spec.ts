@@ -174,7 +174,7 @@ describe("Game", () => {
 
       const move = createMock<Move>({
         gameId: GameId.of("gameId"),
-        playerId: PlayerId.of("playerId"),
+        playerId: PlayerId.of("playerOneId"),
         row: 0,
         column: 0,
         mark: Mark.X,
@@ -218,7 +218,7 @@ describe("Game", () => {
 
       const move = createMock<Move>({
         gameId: GameId.of("gameId"),
-        playerId: PlayerId.of("playerId"),
+        playerId: PlayerId.of("playerOneId"),
         row: 0,
         column: 0,
         mark: Mark.X,
@@ -239,7 +239,7 @@ describe("Game", () => {
 
       const move = createMock<Move>({
         gameId: GameId.of("gameId"),
-        playerId: PlayerId.of("playerId"),
+        playerId: PlayerId.of("playerOneId"),
         row: 0,
         column: 0,
         mark: Mark.X,
@@ -257,6 +257,58 @@ describe("Game", () => {
       ]);
     });
 
+    it("should return an error when the player try to place two moves", () => {
+      const id = GameId.of("id");
+      const playerId = PlayerId.of("playerOneId");
+
+      const move = createMock<Move>({
+        gameId: GameId.of("gameId"),
+        playerId,
+        row: 0,
+        column: 0,
+        mark: Mark.X,
+      });
+
+      const game = new Game(id);
+      game.place(move);
+      const actual = game.place({
+        ...move,
+        row: 1,
+        column: 1,
+      });
+
+      expect(actual).toEqual({
+        error: new Error(
+          "Player with id: playerOneId has already placed a move"
+        ),
+      });
+    });
+
+    it("should return an error when the player is not part of the game", () => {
+      const id = GameId.of("id");
+      const playerOneId = PlayerId.of("playerOneId");
+      const playerTwoId = PlayerId.of("playerTwoId");
+      const playerThreeId = PlayerId.of("playerThreeId");
+
+      const game = new Game(id, playerOneId, playerTwoId);
+
+      const move = createMock<Move>({
+        gameId: GameId.of("gameId"),
+        playerId: playerThreeId,
+        row: 0,
+        column: 0,
+        mark: Mark.X,
+      });
+
+      const actual = game.place(move);
+
+      expect(actual).toEqual({
+        error: new Error(
+          "Player with id: playerThreeId is not part of the game"
+        ),
+      });
+    });
+
     it("should return an error when the row is out of bounds", () => {
       const id = GameId.of("id");
       const playerOneId = PlayerId.of("playerOneId");
@@ -264,7 +316,7 @@ describe("Game", () => {
 
       const move = createMock<Move>({
         gameId: GameId.of("gameId"),
-        playerId: PlayerId.of("playerId"),
+        playerId: PlayerId.of("playerOneId"),
         row: 3 as RowOrColumnValue,
         column: 0,
         mark: Mark.X,
@@ -285,7 +337,7 @@ describe("Game", () => {
 
       const move = createMock<Move>({
         gameId: GameId.of("gameId"),
-        playerId: PlayerId.of("playerId"),
+        playerId: PlayerId.of("playerOneId"),
         row: 0,
         column: 3 as RowOrColumnValue,
         mark: Mark.X,
@@ -306,7 +358,7 @@ describe("Game", () => {
 
       const move = createMock<Move>({
         gameId: GameId.of("gameId"),
-        playerId: PlayerId.of("playerId"),
+        playerId: PlayerId.of("playerOneId"),
         row: 0,
         column: 0,
         mark: Mark.X,
@@ -314,7 +366,10 @@ describe("Game", () => {
 
       const game = new Game(id, playerOneId, playerTwoId);
       game.place(move);
-      const actual = game.place(move);
+      const actual = game.place({
+        ...move,
+        playerId: playerTwoId,
+      });
 
       expect(actual).toEqual({
         error: new Error("Cell is not empty"),
@@ -340,7 +395,7 @@ describe("Game", () => {
 
       const move = createMock<Move>({
         gameId: GameId.of("gameId"),
-        playerId: PlayerId.of("playerId"),
+        playerId: PlayerId.of("playerOneId"),
         row: 0,
         column: 0,
         mark: Mark.X,
@@ -591,7 +646,7 @@ describe("Game", () => {
 
     const move = createMock<Move>({
       gameId: GameId.of("gameId"),
-      playerId: PlayerId.of("playerId"),
+      playerId: PlayerId.of("playerOneId"),
       row: 2,
       column: 1,
       mark: Mark.X,

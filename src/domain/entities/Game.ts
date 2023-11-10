@@ -170,6 +170,21 @@ export class Game extends AggregateRoot {
   public place(move: Move): Result<GameState> {
     const { row, column, playerId } = move;
 
+    if (this.currentPlayer && playerId.equals(this.currentPlayer)) {
+      return Failure.of(
+        new Error(`Player with id: ${playerId.value} has already placed a move`)
+      );
+    }
+
+    if (
+      this.playerOneId?.equals(playerId) === false &&
+      this.playerTwoId?.equals(playerId) === false
+    ) {
+      return Failure.of(
+        new Error(`Player with id: ${playerId.value} is not part of the game`)
+      );
+    }
+
     if (row < 0 || row > 2) {
       return Failure.of(new Error("Row is out of bounds"));
     }
