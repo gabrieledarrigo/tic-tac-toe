@@ -1,6 +1,7 @@
 import { createMock } from "../../../test/utils";
 import { NewGameCreated } from "../events/NewGameCreated";
 import { PlayerJoined } from "../events/PlayerJoined";
+import { PlayerMoved } from "../events/PlayerMoved";
 import { GameId } from "../values/GameId";
 import { PlayerId } from "../values/PlayerId";
 import { Game, Moves } from "./Game";
@@ -658,5 +659,27 @@ describe("Game", () => {
     expect(actual.unwrap()).toEqual({
       state: "In Progress",
     });
+  });
+
+  it("should apply a PlayerMoved event", () => {
+    const id = GameId.of("id");
+    const playerOneId = PlayerId.of("playerOneId");
+    const playerTwoId = PlayerId.of("playerTwoId");
+
+    const move = createMock<Move>({
+      id: "moveId",
+      gameId: GameId.of("gameId"),
+      playerId: PlayerId.of("playerOneId"),
+      row: 0,
+      column: 0,
+      mark: Mark.X,
+    });
+
+    const game = new Game(id, playerOneId, playerTwoId);
+    game.place(move);
+
+    const actual = game.getDomainEvents();
+
+    expect(actual).toEqual([new PlayerMoved(id, playerOneId, move.id)]);
   });
 });
