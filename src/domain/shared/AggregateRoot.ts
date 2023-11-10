@@ -1,13 +1,13 @@
-import { Event } from "./Event";
+import { DomainEvent } from "./DomainEvent";
 
 export abstract class AggregateRoot {
-  private readonly domainEvents: Event[] = [];
+  private readonly domainEvents: DomainEvent[] = [];
 
-  public apply(event: Event): void {
+  public apply(event: DomainEvent): void {
     this.domainEvents.push(event);
   }
 
-  public getDomainEvents(): Event[] {
+  public pullDomainEvents(): DomainEvent[] {
     return this.domainEvents;
   }
 }

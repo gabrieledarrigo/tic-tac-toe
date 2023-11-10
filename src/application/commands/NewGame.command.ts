@@ -22,7 +22,7 @@ export class NewGameCommandHandler
     const game = Game.new(id);
 
     await this.games.persist(game);
-    this.eventBus.publishAll(game.getDomainEvents());
+    this.eventBus.publishAll(game.pullDomainEvents());
 
     return Success.of(id);
   }

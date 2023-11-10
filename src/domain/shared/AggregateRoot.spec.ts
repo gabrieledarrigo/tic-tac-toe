@@ -1,9 +1,9 @@
 import { AggregateRoot } from "./AggregateRoot";
-import { Event } from "./Event";
+import { DomainEvent } from "./DomainEvent";
 
 describe("AggregateRoot", () => {
   describe("apply", () => {
-    class TestEvent extends Event {}
+    class TestEvent extends DomainEvent {}
     class TestAggregateRoot extends AggregateRoot {}
 
     it("should add the event to the domain events", () => {
@@ -12,7 +12,7 @@ describe("AggregateRoot", () => {
 
       aggregateRoot.apply(event);
 
-      expect(aggregateRoot.getDomainEvents()).toEqual([event]);
+      expect(aggregateRoot.pullDomainEvents()).toEqual([event]);
     });
   });
 });

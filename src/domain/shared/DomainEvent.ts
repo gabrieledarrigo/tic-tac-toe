@@ -1,4 +1,4 @@
-export abstract class Event {
+export abstract class DomainEvent {
   public readonly timestamp: number;
 
   constructor() {

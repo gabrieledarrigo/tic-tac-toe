@@ -40,7 +40,7 @@ describe("Game", () => {
 
       const game = Game.new(id);
 
-      expect(game.getDomainEvents()).toContainEqual(new NewGameCreated(id));
+      expect(game.pullDomainEvents()).toContainEqual(new NewGameCreated(id));
     });
 
     it("given an id, when a new Game is created, then the game board should be empty", () => {
@@ -137,7 +137,7 @@ describe("Game", () => {
       const game = new Game(id);
       game.playerJoin(playerOneId);
 
-      expect(game.getDomainEvents()).toContainEqual(
+      expect(game.pullDomainEvents()).toContainEqual(
         new PlayerJoined(game.id, playerOneId)
       );
     });
@@ -678,7 +678,7 @@ describe("Game", () => {
     const game = new Game(id, playerOneId, playerTwoId);
     game.place(move);
 
-    const actual = game.getDomainEvents();
+    const actual = game.pullDomainEvents();
 
     expect(actual).toEqual([new PlayerMoved(id, playerOneId, move.id)]);
   });

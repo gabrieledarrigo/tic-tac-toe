@@ -31,7 +31,7 @@ describe("JoinGameCommandHandler", () => {
     it("should get the Player with the given PlayerId", async () => {
       const game = createMock<Game>({
         playerJoin: jest.fn(),
-        getDomainEvents: jest.fn(),
+        pullDomainEvents: jest.fn(),
       });
 
       jest.spyOn(games, "byId").mockResolvedValue(game);
@@ -64,7 +64,7 @@ describe("JoinGameCommandHandler", () => {
     it("should get a Game with the given GameId", async () => {
       const game = createMock<Game>({
         playerJoin: jest.fn().mockReturnValue(Success.of(undefined)),
-        getDomainEvents: jest.fn(),
+        pullDomainEvents: jest.fn(),
       });
 
       const player = createMock<Player>({
@@ -107,7 +107,7 @@ describe("JoinGameCommandHandler", () => {
     it("should join a Player to the Game", async () => {
       const game = createMock<Game>({
         playerJoin: jest.fn().mockReturnValue(Success.of(undefined)),
-        getDomainEvents: jest.fn(),
+        pullDomainEvents: jest.fn(),
       });
 
       const player = createMock<Player>({
@@ -133,7 +133,7 @@ describe("JoinGameCommandHandler", () => {
         playerJoin: jest
           .fn()
           .mockReturnValue(Failure.of(new Error("Game is full"))),
-        getDomainEvents: jest.fn(),
+        pullDomainEvents: jest.fn(),
       });
 
       const player = createMock<Player>({
@@ -157,7 +157,7 @@ describe("JoinGameCommandHandler", () => {
     it("should persist the Game", async () => {
       const game = createMock<Game>({
         playerJoin: jest.fn().mockReturnValue(Success.of(undefined)),
-        getDomainEvents: jest.fn(),
+        pullDomainEvents: jest.fn(),
       });
 
       const player = createMock<Player>({
@@ -181,7 +181,7 @@ describe("JoinGameCommandHandler", () => {
     it("should publish all Game domain events", async () => {
       const game = createMock<Game>({
         playerJoin: jest.fn().mockReturnValue(Success.of(undefined)),
-        getDomainEvents: jest
+        pullDomainEvents: jest
           .fn()
           .mockReturnValue([new PlayerJoined(gameId, playerId)]),
       });

@@ -45,7 +45,7 @@ export class JoinGameCommandHandler
     }
 
     await this.games.persist(game);
-    this.eventBus.publishAll(game.getDomainEvents());
+    this.eventBus.publishAll(game.pullDomainEvents());
 
     return join;
   }
