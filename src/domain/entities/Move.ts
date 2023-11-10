@@ -1,11 +1,18 @@
 import { GameId } from "../values/GameId";
 import { PlayerId } from "../values/PlayerId";
 
+/**
+ * Represents the possible marks in a tic-tac-toe game.
+ */
 export enum Mark {
   X = "X",
   O = "O",
 }
 
+/**
+ * Represents a value for a row or column in a tic-tac-toe board.
+ * Can be 0, 1, or 2.
+ */
 export type RowOrColumnValue = 0 | 1 | 2;
 
 /**

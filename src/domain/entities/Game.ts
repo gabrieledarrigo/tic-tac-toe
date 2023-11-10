@@ -7,14 +7,24 @@ import { PlayerId } from "../values/PlayerId";
 import { Move, RowOrColumnValue } from "./Move";
 import { GameState } from "../values/GameState";
 
+/**
+ * Represents a cell on the game board, which can either be a move or null.
+ */
 export type Cell = Move | null;
 
+/**
+ * Represents a tic-tac-toe board, which is a 3x3 grid of cells.
+ */
 export type Board = [
   [Cell, Cell, Cell],
   [Cell, Cell, Cell],
   [Cell, Cell, Cell]
 ];
 
+/**
+ * Represents a list of moves in a Tic Tac Toe game.
+ * The list can have between 0 and 9 moves.
+ */
 export type Moves =
   | []
   | [Move]
@@ -27,13 +37,22 @@ export type Moves =
   | [Move, Move, Move, Move, Move, Move, Move, Move]
   | [Move, Move, Move, Move, Move, Move, Move, Move, Move];
 
+/**
+ * Represents a game of Tic Tac Toe.
+ */
 export class Game extends AggregateRoot {
+  /**
+   * Represents the game board as a 2D array of null or move values.
+   */
   private readonly board: Board = [
     [null, null, null],
     [null, null, null],
     [null, null, null],
   ];
 
+  /**
+   * The ID of the player who is currently taking their turn.
+   */
   private currentPlayer?: PlayerId;
 
   public constructor(
@@ -49,6 +68,12 @@ export class Game extends AggregateRoot {
     });
   }
 
+  /**
+   * Creates a new instance of the Game class with the specified id.
+   * Also applies the NewGameCreated event.
+   * @param id The id of the game.
+   * @returns A new instance of the Game class.
+   */
   public static new(id: GameId): Game {
     const game = new Game(id);
     game.apply(new NewGameCreated(id));
@@ -56,6 +81,12 @@ export class Game extends AggregateRoot {
     return game;
   }
 
+  /**
+   * Adds a player to the game.
+   * Also applies the PlayerJoined event.
+   * @param playerId The ID of the player to add.
+   * @returns A Result object indicating success or failure.
+   */
   public playerJoin(playerId: PlayerId): Result<void> {
     if (this.isFull()) {
       if (
@@ -81,30 +112,61 @@ export class Game extends AggregateRoot {
     return Success.of(undefined);
   }
 
+  /**
+   * Returns the ID of the first player in the game.
+   * @returns The ID of the first player, or undefined if it has not been set.
+   */
   public getPlayerOneId(): PlayerId | undefined {
     return this.playerOneId;
   }
 
+  /**
+   * Returns the ID of the second player in the game, if any.
+   * @returns The ID of the second player, or undefined if there is no second player.
+   */
   public getPlayerTwoId(): PlayerId | undefined {
     return this.playerTwoId;
   }
 
+  /**
+   * Returns the current board of the game.
+   * @returns {Board} The current board of the game.
+   */
   public getBoard(): Board {
     return this.board;
   }
 
+  /**
+   * Checks if the game board is empty.
+   * @returns {boolean} True if the board is empty, false otherwise.
+   */
   public boardIsEmpty(): boolean {
     return this.board.every((row) => row.every((cell) => cell === null));
   }
 
+  /**
+   * Checks if the game board is full.
+   * @returns {boolean} True if the board is full, false otherwise.
+   */
   public boardIsFull(): boolean {
     return this.board.every((row) => row.every((cell) => cell !== null));
   }
 
+  /**
+   * Returns the cell at the specified row and column.
+   * @param row The row of the cell to retrieve.
+   * @param column The column of the cell to retrieve.
+   * @returns The cell at the specified row and column.
+   */
   public getCell(row: RowOrColumnValue, column: RowOrColumnValue): Cell {
     return this.board[row][column];
   }
 
+  /**
+   * Places a move on the game board and updates the game state accordingly.
+   * @param move - The move to place on the board.
+   * @returns A Result object containing either the updated game state or an error.
+   */
   public place(move: Move): Result<GameState> {
     const { row, column, playerId } = move;
 
@@ -127,14 +189,24 @@ export class Game extends AggregateRoot {
     this.board[row][column] = move;
     this.currentPlayer = playerId;
 
-    return Success.of(this.gameStatus());
+    const state = this.gameState();
+
+    return Success.of(state);
   }
 
+  /**
+   * Checks if the game is full, meaning both playerOneId and playerTwoId are defined.
+   * @returns {boolean} True if the game is full, false otherwise.
+   */
   private isFull(): boolean {
     return !!this.playerOneId && !!this.playerTwoId;
   }
 
-  private gameStatus(): GameState {
+  /**
+   * Returns the current state of the game.
+   * @returns {GameState} The current state of the game.
+   */
+  private gameState(): GameState {
     // Check for horizontal win
     if (
       (this.checkMarksAreEquals([0, 0], [0, 1]) &&
@@ -176,6 +248,12 @@ export class Game extends AggregateRoot {
     return GameState.of("In Progress");
   }
 
+  /**
+   * Checks if the marks of two cells are equal.
+   * @param firstCellPosition - The position of the first cell.
+   * @param secondCellPosition - The position of the second cell.
+   * @returns True if the marks of the two cells are equal, false otherwise.
+   */
   private checkMarksAreEquals(
     firstCellPosition: [RowOrColumnValue, RowOrColumnValue],
     secondCellPosition: [RowOrColumnValue, RowOrColumnValue]
