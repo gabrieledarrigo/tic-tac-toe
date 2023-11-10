@@ -29,9 +29,16 @@ export class GamesRepository implements Games {
   }
 
   public async persist(game: Game): Promise<void> {
-    await this.prisma.game.create({
-      data: {
+    await this.prisma.game.upsert({
+      where: {
         id: game.id.value,
+      },
+      create: {
+        id: game.id.value,
+        playerOneId: game.getPlayerOneId()?.value,
+        playerTwoId: game.getPlayerTwoId()?.value,
+      },
+      update: {
         playerOneId: game.getPlayerOneId()?.value,
         playerTwoId: game.getPlayerTwoId()?.value,
       },

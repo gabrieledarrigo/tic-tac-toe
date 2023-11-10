@@ -39,7 +39,7 @@ export class GamesController {
     );
 
     return result.unwrapOrElse((error) => {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error.message);
     });
   }
 }

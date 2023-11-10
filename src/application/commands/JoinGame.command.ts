@@ -1,8 +1,9 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { Failure, Result } from "../../domain/shared/Result";
+import { CommandHandler, EventBus, ICommandHandler } from "@nestjs/cqrs";
+import { Failure, Result, Success } from "../../domain/shared/Result";
 import { GameId } from "../../domain/values/GameId";
 import { PlayerId } from "../../domain/values/PlayerId";
 import { GamesRepository } from "../../infrastructure/repositories/Games.repository";
+import { PlayersRepository } from "../../infrastructure/repositories/Players.repository";
 
 export class JoinGame {
   constructor(
@@ -15,17 +16,32 @@ export class JoinGame {
 export class JoinGameCommandHandler
   implements ICommandHandler<JoinGame, Result<void>>
 {
-  constructor(private readonly games: GamesRepository) {}
+  constructor(
+    private readonly games: GamesRepository,
+    private readonly players: PlayersRepository,
+    private readonly eventBus: EventBus
+  ) {}
 
   public async execute(command: JoinGame): Promise<Result<void>> {
-    const game = await this.games.byId(command.gameId);
+    const { playerId, gameId } = command;
+    const player = await this.players.byId(playerId);
 
-    if (!game) {
+    if (!player) {
       return Failure.of(
-        new Error(`Game with id ${command.gameId.value} not found`)
+        new Error(`Player with id ${playerId.value} not found`)
       );
     }
 
-    return game.playerJoin(command.playerId);
+    const game = await this.games.byId(gameId);
+
+    if (!game) {
+      return Failure.of(new Error(`Game with id ${gameId.value} not found`));
+    }
+
+    game.playerJoin(command.playerId);
+    await this.games.persist(game);
+    this.eventBus.publishAll(game.getDomainEvents());
+
+    return Success.of(undefined);
   }
 }
