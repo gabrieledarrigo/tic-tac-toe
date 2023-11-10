@@ -8,7 +8,19 @@ export enum Mark {
 
 export type RowOrColumnValue = 0 | 1 | 2;
 
+/**
+ * Represents a move made by a player in a tic-tac-toe game.
+ */
 export class Move {
+  /**
+   * Creates an instance of Move.
+   * @param {string} id - The unique identifier of the move.
+   * @param {GameId} gameId - The identifier of the game the move belongs to.
+   * @param {PlayerId} playerId - The identifier of the player who made the move.
+   * @param {0|1|2} row - The row where the move was made.
+   * @param {0|1|2} column - The column where the move was made.
+   * @param {Mark} mark - The mark (X or O) made by the player.
+   */
   constructor(
     public readonly id: string,
     public readonly gameId: GameId,

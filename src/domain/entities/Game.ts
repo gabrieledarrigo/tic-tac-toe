@@ -4,7 +4,8 @@ import { GameId } from "../values/GameId";
 import { PlayerJoined } from "../events/PlayerJoined";
 import { Failure, Result, Success } from "../shared/Result";
 import { PlayerId } from "../values/PlayerId";
-import { Move } from "./Move";
+import { Move, RowOrColumnValue } from "./Move";
+import { GameState } from "../values/GameState";
 
 export type Cell = Move | null;
 
@@ -32,6 +33,8 @@ export class Game extends AggregateRoot {
     [null, null, null],
     [null, null, null],
   ];
+
+  private currentPlayer?: PlayerId;
 
   public constructor(
     public readonly id: GameId,
@@ -98,12 +101,12 @@ export class Game extends AggregateRoot {
     return this.board.every((row) => row.every((cell) => cell !== null));
   }
 
-  public getCell(row: number, column: number): Cell {
+  public getCell(row: RowOrColumnValue, column: RowOrColumnValue): Cell {
     return this.board[row][column];
   }
 
-  public place(move: Move): Result<void> {
-    const { row, column } = move;
+  public place(move: Move): Result<GameState> {
+    const { row, column, playerId } = move;
 
     if (row < 0 || row > 2) {
       return Failure.of(new Error("Row is out of bounds"));
@@ -114,15 +117,76 @@ export class Game extends AggregateRoot {
     }
 
     if (this.getCell(row, column) !== null) {
+      if (this.boardIsFull()) {
+        return Failure.of(new Error("Game is ended"));
+      }
+
       return Failure.of(new Error("Cell is not empty"));
     }
 
     this.board[row][column] = move;
+    this.currentPlayer = playerId;
 
-    return Success.of(undefined);
+    return Success.of(this.gameStatus());
   }
 
   private isFull(): boolean {
     return !!this.playerOneId && !!this.playerTwoId;
+  }
+
+  private gameStatus(): GameState {
+    // Check for horizontal win
+    if (
+      (this.checkMarksAreEquals([0, 0], [0, 1]) &&
+        this.checkMarksAreEquals([0, 1], [0, 2])) ||
+      (this.checkMarksAreEquals([1, 0], [1, 1]) &&
+        this.checkMarksAreEquals([1, 1], [1, 2])) ||
+      (this.checkMarksAreEquals([2, 0], [2, 1]) &&
+        this.checkMarksAreEquals([2, 1], [2, 2]))
+    ) {
+      return GameState.of("Horizontal Win", this.currentPlayer);
+    }
+
+    // Check for vertical win
+    if (
+      (this.checkMarksAreEquals([0, 0], [1, 0]) &&
+        this.checkMarksAreEquals([1, 0], [2, 0])) ||
+      (this.checkMarksAreEquals([0, 1], [1, 1]) &&
+        this.checkMarksAreEquals([1, 1], [2, 1])) ||
+      (this.checkMarksAreEquals([0, 2], [1, 2]) &&
+        this.checkMarksAreEquals([1, 2], [2, 2]))
+    ) {
+      return GameState.of("Vertical Win", this.currentPlayer);
+    }
+
+    // Check for diagonal win
+    if (
+      (this.checkMarksAreEquals([0, 0], [1, 1]) &&
+        this.checkMarksAreEquals([1, 1], [2, 2])) ||
+      (this.checkMarksAreEquals([0, 2], [1, 1]) &&
+        this.checkMarksAreEquals([1, 1], [2, 0]))
+    ) {
+      return GameState.of("Diagonal Win", this.currentPlayer);
+    }
+
+    if (this.boardIsFull()) {
+      return GameState.of("Draw");
+    }
+
+    return GameState.of("In Progress");
+  }
+
+  private checkMarksAreEquals(
+    firstCellPosition: [RowOrColumnValue, RowOrColumnValue],
+    secondCellPosition: [RowOrColumnValue, RowOrColumnValue]
+  ): boolean {
+    const firstCell = this.getCell(...firstCellPosition);
+    const secondCell = this.getCell(...secondCellPosition);
+
+    if (!firstCell || !secondCell) {
+      return false;
+    }
+
+    return firstCell.mark === secondCell.mark;
   }
 }
