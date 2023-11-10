@@ -14,7 +14,7 @@ jest.mock("uuid", () => ({
 describe("GamesRepository", () => {
   const prisma = createMock<Prisma>({
     game: {
-      create: jest.fn(),
+      upsert: jest.fn(),
       findUnique: jest.fn(),
     },
   });
@@ -78,9 +78,16 @@ describe("GamesRepository", () => {
       const games = new GamesRepository(prisma);
       games.persist(game);
 
-      expect(prisma.game.create).toHaveBeenCalledWith({
-        data: {
+      expect(prisma.game.upsert).toHaveBeenCalledWith({
+        where: {
           id: "id",
+        },
+        create: {
+          id: game.id.value,
+          playerOneId: playerOneId.value,
+          playerTwoId: playerTwoId?.value,
+        },
+        update: {
           playerOneId: playerOneId.value,
           playerTwoId: playerTwoId?.value,
         },

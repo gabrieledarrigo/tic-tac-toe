@@ -71,7 +71,20 @@ describe("Game", () => {
       expect(game.getPlayerTwoId()).toEqual(playerTwoId);
     });
 
-    it("given a PlayerId, when joined, then it should not add the player to the game if the player is already in the game as the player one", () => {
+    it("given a PlayerId, when joined, then it should add the player to the game if the player is already in the game as the player one", () => {
+      const id = GameId.of("id");
+      const playerOneId = PlayerId.of("playerOneId");
+
+      const game = new Game(id);
+      game.playerJoin(playerOneId);
+
+      const actual = game.playerJoin(playerOneId);
+
+      expect(actual.isSuccess()).toBeTruthy();
+      expect(game.getPlayerOneId()).toEqual(playerOneId);
+    });
+
+    it("given a PlayerId, when joined, then it should add the player to the game if the player is already in the game as the player two", () => {
       const id = GameId.of("id");
       const playerOneId = PlayerId.of("playerOneId");
       const playerTwoId = PlayerId.of("playerTwoId");
@@ -83,9 +96,11 @@ describe("Game", () => {
       const actual = game.playerJoin(playerTwoId);
 
       expect(actual.isSuccess()).toBeTruthy();
+      expect(game.getPlayerOneId()).toEqual(playerOneId);
+      expect(game.getPlayerTwoId()).toEqual(playerTwoId);
     });
 
-    it("given a PlayerId, when joined, then it should not add the player to the game if the player is already in the game as the player two", () => {
+    it("given a PlayerId, when joined, then it should not add the player to the game if the player is already in the game in another position", () => {
       const id = GameId.of("id");
       const playerOneId = PlayerId.of("playerOneId");
 
@@ -95,6 +110,8 @@ describe("Game", () => {
       const actual = game.playerJoin(playerOneId);
 
       expect(actual.isSuccess()).toBeTruthy();
+      expect(game.getPlayerOneId()).toEqual(playerOneId);
+      expect(game.getPlayerTwoId()).toEqual(undefined);
     });
 
     it("given a player, when joined, then it should not add the player to the game if the game is full", () => {

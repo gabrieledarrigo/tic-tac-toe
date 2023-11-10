@@ -7,6 +7,7 @@ import { GamesRepository } from "../../infrastructure/repositories/Games.reposit
 import { JoinGame, JoinGameCommandHandler } from "./JoinGame.command";
 import { PlayerJoined } from "../../domain/events/PlayerJoined";
 import { PlayersRepository } from "../../infrastructure/repositories/Players.repository";
+import { Failure, Success } from "../../domain/shared/Result";
 
 describe("JoinGameCommandHandler", () => {
   describe("execute", () => {
@@ -62,7 +63,7 @@ describe("JoinGameCommandHandler", () => {
 
     it("should get a Game with the given GameId", async () => {
       const game = createMock<Game>({
-        playerJoin: jest.fn(),
+        playerJoin: jest.fn().mockReturnValue(Success.of(undefined)),
         getDomainEvents: jest.fn(),
       });
 
@@ -105,7 +106,7 @@ describe("JoinGameCommandHandler", () => {
 
     it("should join a Player to the Game", async () => {
       const game = createMock<Game>({
-        playerJoin: jest.fn(),
+        playerJoin: jest.fn().mockReturnValue(Success.of(undefined)),
         getDomainEvents: jest.fn(),
       });
 
@@ -127,9 +128,35 @@ describe("JoinGameCommandHandler", () => {
       expect(game.playerJoin).toHaveBeenCalledWith(playerId);
     });
 
+    it("should return a failure if the Player cannot join the Game", async () => {
+      const game = createMock<Game>({
+        playerJoin: jest
+          .fn()
+          .mockReturnValue(Failure.of(new Error("Game is full"))),
+        getDomainEvents: jest.fn(),
+      });
+
+      const player = createMock<Player>({
+        id: playerId,
+      });
+
+      jest.spyOn(players, "byId").mockResolvedValue(player);
+      jest.spyOn(games, "byId").mockResolvedValue(game);
+
+      const commandHandler = new JoinGameCommandHandler(
+        games,
+        players,
+        eventBus
+      );
+
+      const actual = await commandHandler.execute(command);
+
+      expect(actual.isFailure()).toBeTruthy();
+    });
+
     it("should persist the Game", async () => {
       const game = createMock<Game>({
-        playerJoin: jest.fn(),
+        playerJoin: jest.fn().mockReturnValue(Success.of(undefined)),
         getDomainEvents: jest.fn(),
       });
 
@@ -153,7 +180,7 @@ describe("JoinGameCommandHandler", () => {
 
     it("should publish all Game domain events", async () => {
       const game = createMock<Game>({
-        playerJoin: jest.fn(),
+        playerJoin: jest.fn().mockReturnValue(Success.of(undefined)),
         getDomainEvents: jest
           .fn()
           .mockReturnValue([new PlayerJoined(gameId, playerId)]),

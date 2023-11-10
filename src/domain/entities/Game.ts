@@ -67,6 +67,8 @@ export class Game extends AggregateRoot {
 
     if (!this.playerOneId) {
       this.playerOneId = playerId;
+    } else if (this.playerOneId.equals(playerId)) {
+      return Success.of(undefined);
     } else {
       this.playerTwoId = playerId;
     }

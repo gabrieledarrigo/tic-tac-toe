@@ -38,10 +38,15 @@ export class JoinGameCommandHandler
       return Failure.of(new Error(`Game with id ${gameId.value} not found`));
     }
 
-    game.playerJoin(command.playerId);
+    const join = game.playerJoin(command.playerId);
+
+    if (join.isFailure()) {
+      return Failure.of(join.error);
+    }
+
     await this.games.persist(game);
     this.eventBus.publishAll(game.getDomainEvents());
 
-    return Success.of(undefined);
+    return join;
   }
 }
