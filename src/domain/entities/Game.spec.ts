@@ -4,7 +4,7 @@ import { PlayerJoined } from "../events/PlayerJoined";
 import { GameId } from "../values/GameId";
 import { PlayerId } from "../values/PlayerId";
 import { Game, Moves } from "./Game";
-import { Mark, Move } from "./Move";
+import { Mark, Move, RowOrColumnValue } from "./Move";
 
 describe("Game", () => {
   it("given an array of Moves, it should arrange the board", () => {
@@ -213,6 +213,101 @@ describe("Game", () => {
       const actual = game.boardIsFull();
 
       expect(actual).toEqual(false);
+    });
+  });
+
+  describe("place", () => {
+    it("should place a Move on the board within the given row and column coordinates", () => {
+      const id = GameId.of("id");
+      const playerOneId = PlayerId.of("playerOneId");
+      const playerTwoId = PlayerId.of("playerTwoId");
+
+      const move = createMock<Move>({
+        id: "id",
+        gameId: GameId.of("gameId"),
+        playerId: PlayerId.of("playerId"),
+        row: 0,
+        column: 0,
+        mark: Mark.X,
+      });
+
+      const game = new Game(id, playerOneId, playerTwoId);
+      game.place(move);
+
+      const actual = game.getBoard();
+
+      expect(actual).toEqual([
+        [move, null, null],
+        [null, null, null],
+        [null, null, null],
+      ]);
+    });
+
+    it("should return an error when the row is out of bounds", () => {
+      const id = GameId.of("id");
+      const playerOneId = PlayerId.of("playerOneId");
+      const playerTwoId = PlayerId.of("playerTwoId");
+
+      const move = createMock<Move>({
+        id: "id",
+        gameId: GameId.of("gameId"),
+        playerId: PlayerId.of("playerId"),
+        row: 3 as RowOrColumnValue,
+        column: 0,
+        mark: Mark.X,
+      });
+
+      const game = new Game(id, playerOneId, playerTwoId);
+      const actual = game.place(move);
+
+      expect(actual).toEqual({
+        error: new Error("Row is out of bounds"),
+      });
+    });
+
+    it("should return an error when the column is out of bounds", () => {
+      const id = GameId.of("id");
+      const playerOneId = PlayerId.of("playerOneId");
+      const playerTwoId = PlayerId.of("playerTwoId");
+
+      const move = createMock<Move>({
+        id: "id",
+        gameId: GameId.of("gameId"),
+        playerId: PlayerId.of("playerId"),
+        row: 0,
+        column: 3 as RowOrColumnValue,
+        mark: Mark.X,
+      });
+
+      const game = new Game(id, playerOneId, playerTwoId);
+      const actual = game.place(move);
+
+      expect(actual).toEqual({
+        error: new Error("Column is out of bounds"),
+      });
+    });
+
+    it("should return an error when the cell is not empty", () => {
+      const id = GameId.of("id");
+      const playerOneId = PlayerId.of("playerOneId");
+      const playerTwoId = PlayerId.of("playerTwoId");
+
+      const move = createMock<Move>({
+        id: "id",
+        gameId: GameId.of("gameId"),
+        playerId: PlayerId.of("playerId"),
+        row: 0,
+        column: 0,
+        mark: Mark.X,
+      });
+
+      const game = new Game(id, playerOneId, playerTwoId);
+      game.place(move);
+      const actual = game.place(move);
+
+      expect(actual).toEqual({
+        error: new Error("Cell is not empty"),
+      });
     });
   });
 });

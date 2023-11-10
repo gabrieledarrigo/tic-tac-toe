@@ -1,6 +1,5 @@
 import { Game } from "../../domain/entities";
 import { GameId } from "../../domain/values/GameId";
-import { Board } from "../../domain/values/Board";
 import { Game as RepositoryGame } from "../repositories/types";
 import { PlayerId } from "../../domain/values/PlayerId";
 
