@@ -143,16 +143,52 @@ describe("Game", () => {
     });
   });
 
-  describe("getCell", () => {
-    it("should return the cell value", () => {
+  describe("getPlayerOneId", () => {
+    it("should return the id of the first player in the game, if present", () => {
+      const id = GameId.of("id");
+      const playerOneId = PlayerId.of("playerOneId");
+
+      const game = new Game(id);
+
+      expect(game.getPlayerOneId()).toBeUndefined();
+
+      game.playerJoin(playerOneId);
+
+      expect(game.getPlayerOneId()).toEqual(playerOneId);
+    });
+  });
+
+  describe("getPlayerTwoId", () => {
+    it("should return the id of the second player in the game, if present", () => {
+      const id = GameId.of("id");
+      const playerTwoId = PlayerId.of("playerTwoId");
+
+      const game = new Game(id, PlayerId.of("playerOneId"));
+
+      expect(game.getPlayerTwoId()).toBeUndefined();
+
+      game.playerJoin(playerTwoId);
+
+      expect(game.getPlayerTwoId()).toEqual(playerTwoId);
+    });
+  });
+
+  describe("getMoves", () => {
+    it("should return the Moves made in the Game", () => {
       const id = GameId.of("id");
       const playerOneId = PlayerId.of("playerOneId");
       const playerTwoId = PlayerId.of("playerTwoId");
 
-      const game = new Game(id, playerOneId, playerTwoId);
-      const actual = game.getCell(0, 0);
+      const moves: Moves = [
+        createMock<Move>({ row: 0, column: 0, mark: Mark.X }),
+        createMock<Move>({ row: 1, column: 0, mark: Mark.O }),
+        createMock<Move>({ row: 2, column: 2, mark: Mark.X }),
+      ];
 
-      expect(actual).toEqual(null);
+      const game = new Game(id, playerOneId, playerTwoId, moves);
+      const actual = game.getMoves();
+
+      expect(actual).toEqual(moves);
     });
   });
 
@@ -229,6 +265,19 @@ describe("Game", () => {
       const actual = game.boardIsFull();
 
       expect(actual).toEqual(false);
+    });
+  });
+
+  describe("getCell", () => {
+    it("should return the cell value", () => {
+      const id = GameId.of("id");
+      const playerOneId = PlayerId.of("playerOneId");
+      const playerTwoId = PlayerId.of("playerTwoId");
+
+      const game = new Game(id, playerOneId, playerTwoId);
+      const actual = game.getCell(0, 0);
+
+      expect(actual).toEqual(null);
     });
   });
 
@@ -476,210 +525,210 @@ describe("Game", () => {
         });
       }
     );
-  });
 
-  it.each<{
-    history: [PlayerId, RowOrColumnValue, RowOrColumnValue, Mark][];
-    playerMove: [PlayerId, RowOrColumnValue, RowOrColumnValue, Mark];
-  }>([
-    {
-      history: [
-        [PlayerId.of("playerOneId"), 0, 0, Mark.X],
-        [PlayerId.of("playerTwoId"), 0, 1, Mark.O],
-        [PlayerId.of("playerOneId"), 1, 0, Mark.X],
-        [PlayerId.of("playerTwoId"), 1, 1, Mark.O],
-      ],
-      playerMove: [PlayerId.of("playerOneId"), 2, 0, Mark.X],
-    },
-    {
-      history: [
-        [PlayerId.of("playerOneId"), 0, 1, Mark.X],
-        [PlayerId.of("playerTwoId"), 0, 0, Mark.O],
-        [PlayerId.of("playerOneId"), 1, 1, Mark.X],
-        [PlayerId.of("playerTwoId"), 1, 0, Mark.O],
-      ],
-      playerMove: [PlayerId.of("playerOneId"), 2, 1, Mark.X],
-    },
-    {
-      history: [
-        [PlayerId.of("playerOneId"), 0, 2, Mark.X],
-        [PlayerId.of("playerTwoId"), 0, 1, Mark.O],
-        [PlayerId.of("playerOneId"), 1, 2, Mark.X],
-        [PlayerId.of("playerTwoId"), 1, 1, Mark.O],
-      ],
-      playerMove: [PlayerId.of("playerOneId"), 2, 2, Mark.X],
-    },
-  ])(
-    "should return a GameState with the winner when the Player has won the game with a vertical line",
-    ({ history, playerMove }) => {
-      const id = GameId.of("id");
-      const playerOneId = PlayerId.of("playerOneId");
-      const playerTwoId = PlayerId.of("playerTwoId");
+    it.each<{
+      history: [PlayerId, RowOrColumnValue, RowOrColumnValue, Mark][];
+      playerMove: [PlayerId, RowOrColumnValue, RowOrColumnValue, Mark];
+    }>([
+      {
+        history: [
+          [PlayerId.of("playerOneId"), 0, 0, Mark.X],
+          [PlayerId.of("playerTwoId"), 0, 1, Mark.O],
+          [PlayerId.of("playerOneId"), 1, 0, Mark.X],
+          [PlayerId.of("playerTwoId"), 1, 1, Mark.O],
+        ],
+        playerMove: [PlayerId.of("playerOneId"), 2, 0, Mark.X],
+      },
+      {
+        history: [
+          [PlayerId.of("playerOneId"), 0, 1, Mark.X],
+          [PlayerId.of("playerTwoId"), 0, 0, Mark.O],
+          [PlayerId.of("playerOneId"), 1, 1, Mark.X],
+          [PlayerId.of("playerTwoId"), 1, 0, Mark.O],
+        ],
+        playerMove: [PlayerId.of("playerOneId"), 2, 1, Mark.X],
+      },
+      {
+        history: [
+          [PlayerId.of("playerOneId"), 0, 2, Mark.X],
+          [PlayerId.of("playerTwoId"), 0, 1, Mark.O],
+          [PlayerId.of("playerOneId"), 1, 2, Mark.X],
+          [PlayerId.of("playerTwoId"), 1, 1, Mark.O],
+        ],
+        playerMove: [PlayerId.of("playerOneId"), 2, 2, Mark.X],
+      },
+    ])(
+      "should return a GameState with the winner when the Player has won the game with a vertical line",
+      ({ history, playerMove }) => {
+        const id = GameId.of("id");
+        const playerOneId = PlayerId.of("playerOneId");
+        const playerTwoId = PlayerId.of("playerTwoId");
 
-      const moves = history.map(([playerId, row, column, mark]) => {
-        return createMock<Move>({
+        const moves = history.map(([playerId, row, column, mark]) => {
+          return createMock<Move>({
+            playerId,
+            row,
+            column,
+            mark,
+          });
+        }) as Moves;
+
+        const [playerId, row, column, mark] = playerMove;
+
+        const move = createMock<Move>({
+          gameId: GameId.of("gameId"),
           playerId,
           row,
           column,
           mark,
         });
-      }) as Moves;
 
-      const [playerId, row, column, mark] = playerMove;
+        const game = new Game(id, playerOneId, playerTwoId, moves);
+        const actual = game.place(move);
+
+        expect(actual.unwrap()).toEqual({
+          state: "Vertical Win",
+          winner: playerId,
+        });
+      }
+    );
+
+    it.each<{
+      history: [PlayerId, RowOrColumnValue, RowOrColumnValue, Mark][];
+      playerMove: [PlayerId, RowOrColumnValue, RowOrColumnValue, Mark];
+    }>([
+      {
+        history: [
+          [PlayerId.of("playerOneId"), 0, 0, Mark.X],
+          [PlayerId.of("playerTwoId"), 0, 1, Mark.O],
+          [PlayerId.of("playerOneId"), 1, 1, Mark.X],
+          [PlayerId.of("playerTwoId"), 1, 2, Mark.O],
+        ],
+        playerMove: [PlayerId.of("playerOneId"), 2, 2, Mark.X],
+      },
+      {
+        history: [
+          [PlayerId.of("playerOneId"), 0, 2, Mark.X],
+          [PlayerId.of("playerTwoId"), 0, 1, Mark.O],
+          [PlayerId.of("playerOneId"), 1, 1, Mark.X],
+          [PlayerId.of("playerTwoId"), 1, 0, Mark.O],
+        ],
+        playerMove: [PlayerId.of("playerOneId"), 2, 0, Mark.X],
+      },
+    ])(
+      "should return a GameState with the winner when the Player has won the game with a diagonal line",
+      ({ history, playerMove }) => {
+        const id = GameId.of("id");
+        const playerOneId = PlayerId.of("playerOneId");
+        const playerTwoId = PlayerId.of("playerTwoId");
+
+        const moves = history.map(([playerId, row, column, mark]) => {
+          return createMock<Move>({
+            playerId,
+            row,
+            column,
+            mark,
+          });
+        }) as Moves;
+
+        const [playerId, row, column, mark] = playerMove;
+
+        const move = createMock<Move>({
+          gameId: GameId.of("gameId"),
+          playerId,
+          row,
+          column,
+          mark,
+        });
+
+        const game = new Game(id, playerOneId, playerTwoId, moves);
+        const actual = game.place(move);
+
+        expect(actual.unwrap()).toEqual({
+          state: "Diagonal Win",
+          winner: playerId,
+        });
+      }
+    );
+
+    it("should return a Draw GameState when the board is full and no player won", () => {
+      const id = GameId.of("id");
+      const playerOneId = PlayerId.of("playerOneId");
+      const playerTwoId = PlayerId.of("playerTwoId");
+
+      const moves: Moves = [
+        createMock<Move>({ row: 0, column: 0, mark: Mark.X }),
+        createMock<Move>({ row: 1, column: 1, mark: Mark.O }),
+        createMock<Move>({ row: 0, column: 1, mark: Mark.X }),
+        createMock<Move>({ row: 0, column: 2, mark: Mark.O }),
+        createMock<Move>({ row: 2, column: 0, mark: Mark.X }),
+        createMock<Move>({ row: 1, column: 0, mark: Mark.O }),
+        createMock<Move>({ row: 1, column: 2, mark: Mark.X }),
+        createMock<Move>({ row: 2, column: 1, mark: Mark.O }),
+      ];
 
       const move = createMock<Move>({
         gameId: GameId.of("gameId"),
-        playerId,
-        row,
-        column,
-        mark,
+        playerId: PlayerId.of("playerOneId"),
+        row: 2,
+        column: 2,
+        mark: Mark.X,
       });
 
       const game = new Game(id, playerOneId, playerTwoId, moves);
       const actual = game.place(move);
 
       expect(actual.unwrap()).toEqual({
-        state: "Vertical Win",
-        winner: playerId,
+        state: "Draw",
       });
-    }
-  );
+    });
 
-  it.each<{
-    history: [PlayerId, RowOrColumnValue, RowOrColumnValue, Mark][];
-    playerMove: [PlayerId, RowOrColumnValue, RowOrColumnValue, Mark];
-  }>([
-    {
-      history: [
-        [PlayerId.of("playerOneId"), 0, 0, Mark.X],
-        [PlayerId.of("playerTwoId"), 0, 1, Mark.O],
-        [PlayerId.of("playerOneId"), 1, 1, Mark.X],
-        [PlayerId.of("playerTwoId"), 1, 2, Mark.O],
-      ],
-      playerMove: [PlayerId.of("playerOneId"), 2, 2, Mark.X],
-    },
-    {
-      history: [
-        [PlayerId.of("playerOneId"), 0, 2, Mark.X],
-        [PlayerId.of("playerTwoId"), 0, 1, Mark.O],
-        [PlayerId.of("playerOneId"), 1, 1, Mark.X],
-        [PlayerId.of("playerTwoId"), 1, 0, Mark.O],
-      ],
-      playerMove: [PlayerId.of("playerOneId"), 2, 0, Mark.X],
-    },
-  ])(
-    "should return a GameState with the winner when the Player has won the game with a diagonal line",
-    ({ history, playerMove }) => {
+    it("should return an In Progress GameState when the board is not full and no player won", () => {
       const id = GameId.of("id");
       const playerOneId = PlayerId.of("playerOneId");
       const playerTwoId = PlayerId.of("playerTwoId");
 
-      const moves = history.map(([playerId, row, column, mark]) => {
-        return createMock<Move>({
-          playerId,
-          row,
-          column,
-          mark,
-        });
-      }) as Moves;
-
-      const [playerId, row, column, mark] = playerMove;
+      const moves: Moves = [
+        createMock<Move>({ row: 0, column: 0, mark: Mark.X }),
+        createMock<Move>({ row: 0, column: 1, mark: Mark.O }),
+      ];
 
       const move = createMock<Move>({
         gameId: GameId.of("gameId"),
-        playerId,
-        row,
-        column,
-        mark,
+        playerId: PlayerId.of("playerOneId"),
+        row: 2,
+        column: 1,
+        mark: Mark.X,
       });
 
       const game = new Game(id, playerOneId, playerTwoId, moves);
       const actual = game.place(move);
 
       expect(actual.unwrap()).toEqual({
-        state: "Diagonal Win",
-        winner: playerId,
+        state: "In Progress",
       });
-    }
-  );
-
-  it("should return a Draw GameState when the board is full and no player won", () => {
-    const id = GameId.of("id");
-    const playerOneId = PlayerId.of("playerOneId");
-    const playerTwoId = PlayerId.of("playerTwoId");
-
-    const moves: Moves = [
-      createMock<Move>({ row: 0, column: 0, mark: Mark.X }),
-      createMock<Move>({ row: 1, column: 1, mark: Mark.O }),
-      createMock<Move>({ row: 0, column: 1, mark: Mark.X }),
-      createMock<Move>({ row: 0, column: 2, mark: Mark.O }),
-      createMock<Move>({ row: 2, column: 0, mark: Mark.X }),
-      createMock<Move>({ row: 1, column: 0, mark: Mark.O }),
-      createMock<Move>({ row: 1, column: 2, mark: Mark.X }),
-      createMock<Move>({ row: 2, column: 1, mark: Mark.O }),
-    ];
-
-    const move = createMock<Move>({
-      gameId: GameId.of("gameId"),
-      playerId: PlayerId.of("playerOneId"),
-      row: 2,
-      column: 2,
-      mark: Mark.X,
     });
 
-    const game = new Game(id, playerOneId, playerTwoId, moves);
-    const actual = game.place(move);
+    it("should apply a PlayerMoved event", () => {
+      const id = GameId.of("id");
+      const playerOneId = PlayerId.of("playerOneId");
+      const playerTwoId = PlayerId.of("playerTwoId");
 
-    expect(actual.unwrap()).toEqual({
-      state: "Draw",
+      const move = createMock<Move>({
+        id: "moveId",
+        gameId: GameId.of("gameId"),
+        playerId: PlayerId.of("playerOneId"),
+        row: 0,
+        column: 0,
+        mark: Mark.X,
+      });
+
+      const game = new Game(id, playerOneId, playerTwoId);
+      game.place(move);
+
+      const actual = game.pullDomainEvents();
+
+      expect(actual).toEqual([new PlayerMoved(id, playerOneId, move.id)]);
     });
-  });
-
-  it("should return an In Progress GameState when the board is not full and no player won", () => {
-    const id = GameId.of("id");
-    const playerOneId = PlayerId.of("playerOneId");
-    const playerTwoId = PlayerId.of("playerTwoId");
-
-    const moves: Moves = [
-      createMock<Move>({ row: 0, column: 0, mark: Mark.X }),
-      createMock<Move>({ row: 0, column: 1, mark: Mark.O }),
-    ];
-
-    const move = createMock<Move>({
-      gameId: GameId.of("gameId"),
-      playerId: PlayerId.of("playerOneId"),
-      row: 2,
-      column: 1,
-      mark: Mark.X,
-    });
-
-    const game = new Game(id, playerOneId, playerTwoId, moves);
-    const actual = game.place(move);
-
-    expect(actual.unwrap()).toEqual({
-      state: "In Progress",
-    });
-  });
-
-  it("should apply a PlayerMoved event", () => {
-    const id = GameId.of("id");
-    const playerOneId = PlayerId.of("playerOneId");
-    const playerTwoId = PlayerId.of("playerTwoId");
-
-    const move = createMock<Move>({
-      id: "moveId",
-      gameId: GameId.of("gameId"),
-      playerId: PlayerId.of("playerOneId"),
-      row: 0,
-      column: 0,
-      mark: Mark.X,
-    });
-
-    const game = new Game(id, playerOneId, playerTwoId);
-    game.place(move);
-
-    const actual = game.pullDomainEvents();
-
-    expect(actual).toEqual([new PlayerMoved(id, playerOneId, move.id)]);
   });
 });

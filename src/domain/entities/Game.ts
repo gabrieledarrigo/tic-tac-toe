@@ -60,11 +60,11 @@ export class Game extends AggregateRoot {
     public readonly id: GameId,
     private playerOneId?: PlayerId,
     private playerTwoId?: PlayerId,
-    moves: Moves = []
+    private readonly moves: Moves = []
   ) {
     super();
 
-    moves.forEach((move) => {
+    this.moves.forEach((move) => {
       this.board[move.row][move.column] = move;
     });
   }
@@ -127,6 +127,14 @@ export class Game extends AggregateRoot {
    */
   public getPlayerTwoId(): PlayerId | undefined {
     return this.playerTwoId;
+  }
+
+  /**
+   * Returns an array of all the moves made in the game.
+   * @returns {Moves} An array of moves made in the game.
+   */
+  public getMoves(): Moves {
+    return this.board.flat().filter((cell) => cell !== null) as Moves;
   }
 
   /**

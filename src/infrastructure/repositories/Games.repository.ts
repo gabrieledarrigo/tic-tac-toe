@@ -19,6 +19,9 @@ export class GamesRepository implements Games {
       where: {
         id: id.value,
       },
+      include: {
+        moves: true,
+      },
     });
 
     if (!game) {
@@ -34,13 +37,31 @@ export class GamesRepository implements Games {
         id: game.id.value,
       },
       create: {
-        id: game.id.value,
         playerOneId: game.getPlayerOneId()?.value,
         playerTwoId: game.getPlayerTwoId()?.value,
       },
       update: {
-        playerOneId: game.getPlayerOneId()?.value,
-        playerTwoId: game.getPlayerTwoId()?.value,
+        moves: {
+          upsert: [
+            ...game.getMoves().map(({ id, playerId, row, column, mark }) => {
+              const move = {
+                id: id,
+                playerId: playerId.value,
+                row: row,
+                column: column,
+                mark: mark,
+              };
+
+              return {
+                where: {
+                  id: move.id,
+                },
+                create: move,
+                update: move,
+              };
+            }),
+          ],
+        },
       },
     });
   }

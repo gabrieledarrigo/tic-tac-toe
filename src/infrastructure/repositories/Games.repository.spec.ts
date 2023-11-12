@@ -1,10 +1,10 @@
 import { createMock } from "../../../test/utils";
-import { Game } from "../../domain/entities";
+import { Game, Mark, Move, Moves } from "../../domain/entities";
 import { GameId } from "../../domain/values/GameId";
 import { PlayerId } from "../../domain/values/PlayerId";
 import { Prisma } from "../Prisma";
 import { GamesRepository } from "./Games.repository";
-import { Game as RepositoryGame } from "./types";
+import { GameGetPayload } from "./types";
 import * as uuid from "uuid";
 
 jest.mock("uuid", () => ({
@@ -14,8 +14,8 @@ jest.mock("uuid", () => ({
 describe("GamesRepository", () => {
   const prisma = createMock<Prisma>({
     game: {
-      upsert: jest.fn(),
       findUnique: jest.fn(),
+      upsert: jest.fn(),
     },
   });
 
@@ -33,10 +33,11 @@ describe("GamesRepository", () => {
 
   describe("byId", () => {
     it("should return the Game when it exists", async () => {
-      const game = createMock<RepositoryGame>({
+      const game = createMock<GameGetPayload>({
         id: "id",
         playerOneId: "playerOneId",
         playerTwoId: "playerTwoId",
+        moves: [],
       });
 
       jest.spyOn(prisma.game, "findUnique").mockResolvedValue(game);
@@ -54,6 +55,9 @@ describe("GamesRepository", () => {
         where: {
           id: "id",
         },
+        include: {
+          moves: true,
+        },
       });
       expect(actual).toEqual(expectedGame);
     });
@@ -69,11 +73,28 @@ describe("GamesRepository", () => {
   });
 
   describe("persist", () => {
-    it("should persist a new Game", async () => {
+    it("should persist a new Game along the related Moves", async () => {
       const playerOneId = PlayerId.of("playerOneId");
       const playerTwoId = PlayerId.of("playerTwoId");
 
-      const game = new Game(GameId.of("id"), playerOneId, playerTwoId);
+      const moves: Moves = [
+        createMock<Move>({
+          playerId: playerOneId,
+          row: 0,
+          column: 0,
+          mark: Mark.X,
+        }),
+      ];
+
+      const expectedMove = {
+        id: moves[0].id,
+        playerId: moves[0].playerId.value,
+        row: moves[0].row,
+        column: moves[0].column,
+        mark: moves[0].mark,
+      };
+
+      const game = new Game(GameId.of("id"), playerOneId, playerTwoId, moves);
 
       const games = new GamesRepository(prisma);
       games.persist(game);
@@ -83,13 +104,21 @@ describe("GamesRepository", () => {
           id: "id",
         },
         create: {
-          id: game.id.value,
           playerOneId: playerOneId.value,
           playerTwoId: playerTwoId?.value,
         },
         update: {
-          playerOneId: playerOneId.value,
-          playerTwoId: playerTwoId?.value,
+          moves: {
+            upsert: [
+              {
+                where: {
+                  id: expectedMove.id,
+                },
+                create: expectedMove,
+                update: expectedMove,
+              },
+            ],
+          },
         },
       });
     });

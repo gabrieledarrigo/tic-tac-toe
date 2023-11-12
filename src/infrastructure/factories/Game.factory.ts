@@ -1,10 +1,11 @@
-import { Game } from "../../domain/entities";
+import { Game, Moves } from "../../domain/entities";
 import { GameId } from "../../domain/values/GameId";
-import { Game as RepositoryGame } from "../repositories/types";
+import { GameGetPayload } from "../repositories/types";
 import { PlayerId } from "../../domain/values/PlayerId";
+import { MoveFactory } from "./MoveFactory";
 
 export class GameFactory {
-  public static create(game: RepositoryGame): Game {
+  public static create(game: GameGetPayload): Game {
     const playerOneId = game?.playerOneId
       ? PlayerId.of(game.playerOneId)
       : undefined;
@@ -13,6 +14,15 @@ export class GameFactory {
       ? PlayerId.of(game.playerTwoId)
       : undefined;
 
-    return new Game(GameId.of(game.id), playerOneId, playerTwoId);
+    const moves = game.moves.map((move) => {
+      return MoveFactory.create(move);
+    });
+
+    return new Game(
+      GameId.of(game.id),
+      playerOneId,
+      playerTwoId,
+      moves as Moves
+    );
   }
 }
