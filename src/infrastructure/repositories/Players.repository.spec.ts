@@ -67,4 +67,20 @@ describe("PlayersRepository", () => {
       expect(actual).toBeNull();
     });
   });
+
+  describe("persist", () => {
+    it("should persist the player", async () => {
+      const player = new Player(PlayerId.of("id"), "player@example.com");
+
+      const repository = new PlayersRepository(prisma);
+      await repository.persist(player);
+
+      expect(prisma.player.create).toHaveBeenCalledWith({
+        data: {
+          id: player.id.value,
+          email: player.email,
+        },
+      });
+    });
+  });
 });

@@ -27,4 +27,13 @@ export class PlayersRepository implements Players {
 
     return PlayerFactory.create(player);
   }
+
+  public async persist(player: Player): Promise<void> {
+    await this.prisma.player.create({
+      data: {
+        id: player.id.value,
+        email: player.email,
+      },
+    });
+  }
 }

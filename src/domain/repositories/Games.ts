@@ -1,8 +1,11 @@
 import { Game } from "../entities";
-import { WithNextIdentity } from "../shared/Repository";
+import { Repository } from "../shared/Repository";
 import { GameId } from "../values/GameId";
 
-export interface Games extends WithNextIdentity<GameId> {
+/**
+ * Represents a repository of games.
+ */
+export interface Games extends Repository<Game, GameId> {
   nextIdentity(): GameId;
   byId(id: GameId): Promise<Game | null>;
   persist(game: Game): Promise<void>;
