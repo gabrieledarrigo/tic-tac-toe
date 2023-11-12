@@ -1,3 +1,6 @@
+/**
+ * Represents a failure result with an associated error.
+ */
 export class Failure {
   private constructor(public readonly error: Error) {}
 
@@ -22,6 +25,9 @@ export class Failure {
   }
 }
 
+/**
+ * Represents a successful result with a value of type T.
+ */
 export class Success<T> {
   private constructor(public readonly value: T) {}
 
@@ -46,4 +52,8 @@ export class Success<T> {
   }
 }
 
+/**
+ * Represents the result of an operation that can either succeed with a value of type T,
+ * or fail with a generic Failure object.
+ */
 export type Result<T> = Success<T> | Failure;

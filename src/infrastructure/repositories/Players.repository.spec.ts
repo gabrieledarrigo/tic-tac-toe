@@ -4,7 +4,7 @@ import { Player } from "../../domain/entities/Player";
 import { PlayerId } from "../../domain/values/PlayerId";
 import { PlayersRepository } from "./Players.repository";
 import { Prisma } from "../Prisma";
-import { Player as RepositoryPlayer } from "./types";
+import { PlayerGetPayload } from "./types";
 import * as uuid from "uuid";
 
 jest.mock("uuid", () => ({
@@ -33,7 +33,7 @@ describe("PlayersRepository", () => {
 
   describe("byId", () => {
     it("should return the Player when it exists", async () => {
-      const player = createMock<RepositoryPlayer>({
+      const player = createMock<PlayerGetPayload>({
         id: "id",
         email: "player@example.com",
       });

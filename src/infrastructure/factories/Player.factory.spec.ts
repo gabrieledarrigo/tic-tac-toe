@@ -2,7 +2,7 @@ import { PlayerFactory } from "./Player.factory";
 import { Player } from "../../domain/entities/Player";
 import { PlayerId } from "../../domain/values/PlayerId";
 import { createMock } from "../../../test/utils";
-import { Player as RepositoryPlayer } from "../repositories/types";
+import { PlayerGetPayload as RepositoryPlayer } from "../repositories/types";
 
 describe("PlayerFactory", () => {
   describe("create", () => {

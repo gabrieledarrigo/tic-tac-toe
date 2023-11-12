@@ -1,6 +1,6 @@
 import { Player } from "../../domain/entities";
 import { PlayerId } from "../../domain/values/PlayerId";
-import { Player as RepositoryPlayer } from "../repositories/types";
+import { PlayerGetPayload as RepositoryPlayer } from "../repositories/types";
 
 export class PlayerFactory {
   public static create(player: RepositoryPlayer): Player {
