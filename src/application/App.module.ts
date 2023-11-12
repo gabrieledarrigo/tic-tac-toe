@@ -6,6 +6,7 @@ import { GamesRepository } from "../infrastructure/repositories/Games.repository
 import { NewGameCommandHandler } from "./commands/NewGame.command";
 import { JoinGameCommandHandler } from "./commands/JoinGame.command";
 import { PlayersRepository } from "../infrastructure/repositories/Players.repository";
+import { PlaceMoveCommandHandler } from "./commands/PlaceMove";
 
 @Module({
   imports: [CqrsModule],
@@ -16,6 +17,7 @@ import { PlayersRepository } from "../infrastructure/repositories/Players.reposi
     PlayersRepository,
     NewGameCommandHandler,
     JoinGameCommandHandler,
+    PlaceMoveCommandHandler,
   ],
 })
 export class AppModule {}

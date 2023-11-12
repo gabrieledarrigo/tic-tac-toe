@@ -13,6 +13,9 @@ import { NewGameResponse } from "../dtos/NewGameResponse.dto";
 import { JoinGameRequest } from "../dtos/JoinGameRequest.dto";
 import { JoinGame } from "../commands/JoinGame.command";
 import { PlayerId } from "../../domain/values/PlayerId";
+import { PlaceMoveRequest } from "../dtos/PlaceMoveRequest.dto";
+import { PlaceMove } from "../commands/PlaceMove";
+import { GameState } from "../../domain/values/GameState";
 
 @Controller("/api/games")
 export class GamesController {
@@ -36,6 +39,26 @@ export class GamesController {
   ): Promise<void> {
     const result = await this.commandBus.execute<JoinGame, Result<void>>(
       new JoinGame(GameId.of(gameId), PlayerId.of(joinGameRequest.playerId))
+    );
+
+    return result.unwrapOrElse((error) => {
+      throw new BadRequestException(error.message);
+    });
+  }
+
+  @Post(":id/moves")
+  public async placeMove(
+    @Param("id") gameId: string,
+    @Body() placeMoveRequest: PlaceMoveRequest
+  ): Promise<GameState> {
+    const result = await this.commandBus.execute<PlaceMove, Result<GameState>>(
+      new PlaceMove(
+        GameId.of(gameId),
+        PlayerId.of(placeMoveRequest.playerId),
+        placeMoveRequest.row,
+        placeMoveRequest.column,
+        placeMoveRequest.mark
+      )
     );
 
     return result.unwrapOrElse((error) => {
