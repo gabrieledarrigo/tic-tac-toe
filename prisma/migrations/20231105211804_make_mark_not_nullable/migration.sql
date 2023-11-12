@@ -26,8 +26,8 @@ CREATE TABLE "move" (
     "deleted_at" TIMESTAMPTZ,
 
     CONSTRAINT "move_pkey" PRIMARY KEY ("id"),
-    CONSTRAINT "check_valid_row" CHECK ("row" IN (1, 2, 3)),
-    CONSTRAINT "check_valid_column" CHECK ("column" IN (1, 2, 3))
+    CONSTRAINT "check_valid_row" CHECK ("row" IN (0, 1, 2)),
+    CONSTRAINT "check_valid_column" CHECK ("column" IN (0, 1, 2))
 );
 
 -- AddForeignKey

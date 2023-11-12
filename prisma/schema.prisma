@@ -51,6 +51,7 @@ model Move {
   updatedAt DateTime  @db.Timestamptz() @updatedAt @map("updated_at")
   deletedAt DateTime? @db.Timestamptz() @map("deleted_at")
 
+  @@unique([gameId, playerId, row, column, mark])
   @@map("move")
 }
 
