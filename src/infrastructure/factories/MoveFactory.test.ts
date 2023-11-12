@@ -4,6 +4,7 @@ import { GameId } from "../../domain/values/GameId";
 import { PlayerId } from "../../domain/values/PlayerId";
 import { Mark } from "../../domain/entities";
 import { MoveGetPayload } from "../repositories/types";
+import { MoveId } from "../../domain/values/MoveId";
 
 describe("MoveFactory", () => {
   describe("create", () => {
@@ -21,7 +22,7 @@ describe("MoveFactory", () => {
       };
 
       const expectedMove = new Move(
-        "moveId",
+        MoveId.of("moveId"),
         GameId.of("gameId"),
         PlayerId.of("playerId"),
         0,

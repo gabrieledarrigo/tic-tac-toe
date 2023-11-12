@@ -3,6 +3,7 @@ import { NewGameCreated } from "../events/NewGameCreated";
 import { PlayerJoined } from "../events/PlayerJoined";
 import { PlayerMoved } from "../events/PlayerMoved";
 import { GameId } from "../values/GameId";
+import { MoveId } from "../values/MoveId";
 import { PlayerId } from "../values/PlayerId";
 import { Game, Moves } from "./Game";
 import { Mark, Move, RowOrColumnValue } from "./Move";
@@ -715,7 +716,7 @@ describe("Game", () => {
       const playerTwoId = PlayerId.of("playerTwoId");
 
       const move = createMock<Move>({
-        id: "moveId",
+        id: MoveId.of("moveId"),
         gameId: GameId.of("gameId"),
         playerId: PlayerId.of("playerOneId"),
         row: 0,

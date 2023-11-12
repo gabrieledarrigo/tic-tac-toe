@@ -1,6 +1,7 @@
 import { createMock } from "../../../test/utils";
 import { Game, Mark, Move, Moves } from "../../domain/entities";
 import { GameId } from "../../domain/values/GameId";
+import { MoveId } from "../../domain/values/MoveId";
 import { PlayerId } from "../../domain/values/PlayerId";
 import { Prisma } from "../Prisma";
 import { GamesRepository } from "./Games.repository";
@@ -79,6 +80,7 @@ describe("GamesRepository", () => {
 
       const moves: Moves = [
         createMock<Move>({
+          id: MoveId.of("id"),
           playerId: playerOneId,
           row: 0,
           column: 0,
@@ -87,7 +89,7 @@ describe("GamesRepository", () => {
       ];
 
       const expectedMove = {
-        id: moves[0].id,
+        id: moves[0].id.value,
         playerId: moves[0].playerId.value,
         row: moves[0].row,
         column: moves[0].column,

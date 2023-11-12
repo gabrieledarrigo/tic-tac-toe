@@ -4,7 +4,8 @@ import { Game } from "../../domain/entities/Game";
 import { GameId } from "../../domain/values/GameId";
 import { PlayerId } from "../../domain/values/PlayerId";
 import { createMock } from "../../../test/utils";
-import { Mark } from "../../domain/entities";
+import { Mark, Move } from "../../domain/entities";
+import { MoveId } from "../../domain/values/MoveId";
 
 describe("GameFactory", () => {
   describe("create", () => {
@@ -112,7 +113,7 @@ describe("GameFactory", () => {
         undefined,
         [
           {
-            id: "moveId",
+            id: MoveId.of("moveId"),
             gameId: GameId.of("gameId"),
             playerId: PlayerId.of("playerId"),
             row: 1,

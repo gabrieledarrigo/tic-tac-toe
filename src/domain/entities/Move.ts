@@ -1,4 +1,5 @@
 import { GameId } from "../values/GameId";
+import { MoveId } from "../values/MoveId";
 import { PlayerId } from "../values/PlayerId";
 
 /**
@@ -21,7 +22,7 @@ export type RowOrColumnValue = 0 | 1 | 2;
 export class Move {
   /**
    * Creates an instance of Move.
-   * @param {string} id - The unique identifier of the move.
+   * @param {MoveId} id - The unique identifier of the move.
    * @param {GameId} gameId - The identifier of the game the move belongs to.
    * @param {PlayerId} playerId - The identifier of the player who made the move.
    * @param {0|1|2} row - The row where the move was made.
@@ -29,7 +30,7 @@ export class Move {
    * @param {Mark} mark - The mark (X or O) made by the player.
    */
   constructor(
-    public readonly id: string,
+    public readonly id: MoveId,
     public readonly gameId: GameId,
     public readonly playerId: PlayerId,
     public readonly row: RowOrColumnValue,

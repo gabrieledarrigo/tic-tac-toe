@@ -5,6 +5,7 @@ import { Game } from "../../domain/entities";
 import * as uuid from "uuid";
 import { GameId } from "../../domain/values/GameId";
 import { GameFactory } from "../factories/Game.factory";
+import { MoveId } from "../../domain/values/MoveId";
 
 @Injectable()
 export class GamesRepository implements Games {
@@ -12,6 +13,10 @@ export class GamesRepository implements Games {
 
   public nextIdentity(): GameId {
     return GameId.of(uuid.v4());
+  }
+
+  public nextMoveIdentity(): MoveId {
+    return MoveId.of(uuid.v4());
   }
 
   public async byId(id: GameId): Promise<Game | null> {
@@ -45,7 +50,7 @@ export class GamesRepository implements Games {
           upsert: [
             ...game.getMoves().map(({ id, playerId, row, column, mark }) => {
               const move = {
-                id: id,
+                id: id.value,
                 playerId: playerId.value,
                 row: row,
                 column: column,
