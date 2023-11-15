@@ -1,4 +1,5 @@
 import { createMock } from "../../../test/utils";
+import { GameEnded } from "../events/GameEnded";
 import { NewGameCreated } from "../events/NewGameCreated";
 import { PlayerJoined } from "../events/PlayerJoined";
 import { PlayerMoved } from "../events/PlayerMoved";
@@ -730,6 +731,42 @@ describe("Game", () => {
       const actual = game.pullDomainEvents();
 
       expect(actual).toEqual([new PlayerMoved(id, playerOneId, move.id)]);
+    });
+
+    it("should apply a GameEnded event when the game is ended", () => {
+      const id = GameId.of("id");
+      const playerOneId = PlayerId.of("playerOneId");
+      const playerTwoId = PlayerId.of("playerTwoId");
+
+      const moves: Moves = [
+        createMock<Move>({ row: 0, column: 0, mark: Mark.X }),
+        createMock<Move>({ row: 0, column: 1, mark: Mark.O }),
+        createMock<Move>({ row: 0, column: 2, mark: Mark.X }),
+        createMock<Move>({ row: 1, column: 0, mark: Mark.O }),
+        createMock<Move>({ row: 1, column: 1, mark: Mark.X }),
+        createMock<Move>({ row: 1, column: 2, mark: Mark.O }),
+        createMock<Move>({ row: 2, column: 0, mark: Mark.X }),
+        createMock<Move>({ row: 2, column: 1, mark: Mark.O }),
+      ];
+
+      const move = createMock<Move>({
+        id: MoveId.of("moveId"),
+        gameId: GameId.of("gameId"),
+        playerId: PlayerId.of("playerOneId"),
+        row: 2,
+        column: 2,
+        mark: Mark.X,
+      });
+
+      const game = new Game(id, playerOneId, playerTwoId, moves);
+      game.place(move);
+
+      const actual = game.pullDomainEvents();
+
+      expect(actual).toEqual([
+        new PlayerMoved(id, playerOneId, move.id),
+        new GameEnded(id),
+      ]);
     });
   });
 });

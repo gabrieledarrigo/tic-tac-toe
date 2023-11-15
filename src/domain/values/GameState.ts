@@ -33,4 +33,8 @@ export class GameState {
   public static of(state: State, winner?: PlayerId): GameState {
     return new GameState(state, winner);
   }
+
+  public isEnded(): boolean {
+    return this.state !== "In Progress";
+  }
 }

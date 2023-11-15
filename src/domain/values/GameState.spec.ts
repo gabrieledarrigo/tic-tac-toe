@@ -19,4 +19,15 @@ describe("GameState", () => {
       expect(gameState.winner).toBeUndefined();
     });
   });
+
+  describe("isEnded", () => {
+    it.each(["Horizontal Win", "Vertical Win", "Diagonal Win", "Draw"])(
+      "should return true when the game state is %s",
+      () => {
+        const gameState = GameState.of("Horizontal Win");
+
+        expect(gameState.isEnded()).toBe(true);
+      }
+    );
+  });
 });

@@ -7,6 +7,7 @@ import { PlayerId } from "../values/PlayerId";
 import { Move, RowOrColumnValue } from "./Move";
 import { GameState } from "../values/GameState";
 import { PlayerMoved } from "../events/PlayerMoved";
+import { GameEnded } from "../events/GameEnded";
 
 /**
  * Represents a cell on the game board, which can either be a move or null.
@@ -215,7 +216,12 @@ export class Game extends AggregateRoot {
 
     this.apply(new PlayerMoved(this.id, playerId, move.id));
 
-    return Success.of(this.gameState());
+    const gameState = this.gameState();
+    if (gameState.isEnded()) {
+      this.apply(new GameEnded(this.id));
+    }
+
+    return Success.of(gameState);
   }
 
   /**
