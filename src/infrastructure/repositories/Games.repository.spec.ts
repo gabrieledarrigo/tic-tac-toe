@@ -106,6 +106,7 @@ describe("GamesRepository", () => {
           id: "id",
         },
         create: {
+          id: "id",
           playerOneId: playerOneId.value,
           playerTwoId: playerTwoId?.value,
         },
