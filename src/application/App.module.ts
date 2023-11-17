@@ -7,14 +7,17 @@ import { NewGameCommandHandler } from "./commands/NewGame.command";
 import { JoinGameCommandHandler } from "./commands/JoinGame.command";
 import { PlayersRepository } from "../infrastructure/repositories/Players.repository";
 import { PlaceMoveCommandHandler } from "./commands/PlaceMove";
+import { NewPlayerCommandHandler } from "./commands/NewPlayer.command";
+import { PlayersController } from "./controllers/Players.controller";
 
 @Module({
   imports: [CqrsModule],
-  controllers: [GamesController],
+  controllers: [GamesController, PlayersController],
   providers: [
     Prisma,
     GamesRepository,
     PlayersRepository,
+    NewPlayerCommandHandler,
     NewGameCommandHandler,
     JoinGameCommandHandler,
     PlaceMoveCommandHandler,
