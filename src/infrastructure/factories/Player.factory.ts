@@ -1,9 +1,10 @@
 import { Player } from "../../domain/entities";
+import { Email } from "../../domain/values/Email";
 import { PlayerId } from "../../domain/values/PlayerId";
-import { PlayerGetPayload as RepositoryPlayer } from "../repositories/types";
+import { PlayerGetPayload } from "../repositories/types";
 
 export class PlayerFactory {
-  public static create(player: RepositoryPlayer): Player {
-    return new Player(PlayerId.of(player.id), player.email);
+  public static create(player: PlayerGetPayload): Player {
+    return new Player(PlayerId.of(player.id), Email.of(player.email));
   }
 }

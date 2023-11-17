@@ -1,3 +1,4 @@
+import { Email } from "../values/Email";
 import { PlayerId } from "../values/PlayerId";
 
 /**
@@ -10,5 +11,5 @@ export class Player {
    * @param id - The unique identifier of the player.
    * @param email - The email address of the player.
    */
-  constructor(public readonly id: PlayerId, public readonly email: string) {}
+  constructor(public readonly id: PlayerId, public readonly email: Email) {}
 }

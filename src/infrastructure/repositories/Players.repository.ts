@@ -32,7 +32,7 @@ export class PlayersRepository implements Players {
     await this.prisma.player.create({
       data: {
         id: player.id.value,
-        email: player.email,
+        email: player.email.value,
       },
     });
   }

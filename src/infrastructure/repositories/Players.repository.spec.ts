@@ -6,6 +6,7 @@ import { PlayersRepository } from "./Players.repository";
 import { Prisma } from "../Prisma";
 import { PlayerGetPayload } from "./types";
 import * as uuid from "uuid";
+import { Email } from "../../domain/values/Email";
 
 jest.mock("uuid", () => ({
   v4: jest.fn(),
@@ -70,7 +71,10 @@ describe("PlayersRepository", () => {
 
   describe("persist", () => {
     it("should persist the player", async () => {
-      const player = new Player(PlayerId.of("id"), "player@example.com");
+      const player = new Player(
+        PlayerId.of("id"),
+        Email.of("player@example.com")
+      );
 
       const repository = new PlayersRepository(prisma);
       await repository.persist(player);
@@ -78,7 +82,7 @@ describe("PlayersRepository", () => {
       expect(prisma.player.create).toHaveBeenCalledWith({
         data: {
           id: player.id.value,
-          email: player.email,
+          email: player.email.value,
         },
       });
     });

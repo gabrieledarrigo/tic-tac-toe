@@ -3,6 +3,7 @@ import { Player } from "../../domain/entities/Player";
 import { PlayerId } from "../../domain/values/PlayerId";
 import { createMock } from "../../../test/utils";
 import { PlayerGetPayload as RepositoryPlayer } from "../repositories/types";
+import { Email } from "../../domain/values/Email";
 
 describe("PlayerFactory", () => {
   describe("create", () => {
@@ -14,7 +15,7 @@ describe("PlayerFactory", () => {
 
       const expectedPlayer = new Player(
         PlayerId.of(repositoryPlayer.id),
-        repositoryPlayer.email
+        Email.of(repositoryPlayer.email)
       );
 
       const player = PlayerFactory.create(repositoryPlayer);
