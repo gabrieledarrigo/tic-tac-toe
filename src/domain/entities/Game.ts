@@ -71,13 +71,14 @@ export class Game extends AggregateRoot {
   }
 
   /**
-   * Creates a new instance of the Game class with the specified id.
-   * Also applies the NewGameCreated event.
-   * @param id The id of the game.
+   * Creates a new instance of the Game class.
+   *
+   * @param id - The ID of the game.
+   * @param playerOneId - The ID of the first player.
    * @returns A new instance of the Game class.
    */
-  public static new(id: GameId): Game {
-    const game = new Game(id);
+  public static new(id: GameId, playerOneId: PlayerId): Game {
+    const game = new Game(id, playerOneId);
     game.apply(new NewGameCreated(id));
 
     return game;

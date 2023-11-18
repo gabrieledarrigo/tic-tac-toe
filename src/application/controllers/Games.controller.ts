@@ -16,15 +16,20 @@ import { PlayerId } from "../../domain/values/PlayerId";
 import { PlaceMoveRequest } from "../dtos/PlaceMoveRequest.dto";
 import { PlaceMove } from "../commands/PlaceMove";
 import { GameState } from "../../domain/values/GameState";
+import { NewGameRequest } from "../dtos/NewGameRequest.dto";
 
 @Controller("/api/games")
 export class GamesController {
   constructor(private readonly commandBus: CommandBus) {}
 
   @Post()
-  public async newGame(): Promise<NewGameResponse> {
+  public async newGame(
+    @Body() newGameRequest: NewGameRequest
+  ): Promise<NewGameResponse> {
     const result = (
-      await this.commandBus.execute<NewGame, Result<GameId>>(new NewGame())
+      await this.commandBus.execute<NewGame, Result<GameId>>(
+        new NewGame(PlayerId.of(newGameRequest.playerOneId))
+      )
     ).unwrapOrElse((error) => {
       throw new BadRequestException(error);
     });

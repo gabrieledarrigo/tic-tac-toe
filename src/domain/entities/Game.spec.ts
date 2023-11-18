@@ -37,18 +37,29 @@ describe("Game", () => {
   });
 
   describe("new", () => {
-    it("given an id, when a new Game is created, then it should publish a NewGameCreated event", () => {
+    it("given an id and the id of the player one, when the Game is created, then it should set the id of the player one", () => {
       const id = GameId.of("id");
+      const playerOneId = PlayerId.of("playerOneId");
 
-      const game = Game.new(id);
+      const game = Game.new(id, playerOneId);
+
+      expect(game.getPlayerOneId()).toEqual(playerOneId);
+    });
+
+    it("given an id and the id of the player one, when a new Game is created, then it should publish a NewGameCreated event", () => {
+      const id = GameId.of("id");
+      const playerOneId = PlayerId.of("playerOneId");
+
+      const game = Game.new(id, playerOneId);
 
       expect(game.pullDomainEvents()).toContainEqual(new NewGameCreated(id));
     });
 
-    it("given an id, when a new Game is created, then the game board should be empty", () => {
+    it("given an id and the id of the player one, when a new Game is created, then the game board should be empty", () => {
       const id = GameId.of("id");
+      const playerOneId = PlayerId.of("playerOneId");
 
-      const game = Game.new(id);
+      const game = Game.new(id, playerOneId);
 
       expect(game.getBoard()).toEqual([
         [null, null, null],
