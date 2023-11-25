@@ -17,11 +17,7 @@ export type Cell = Move | null;
 /**
  * Represents a tic-tac-toe board, which is a 3x3 grid of cells.
  */
-export type Board = [
-  [Cell, Cell, Cell],
-  [Cell, Cell, Cell],
-  [Cell, Cell, Cell]
-];
+export type Board = [[Cell, Cell, Cell], [Cell, Cell, Cell], [Cell, Cell, Cell]];
 
 /**
  * Represents a list of moves in a Tic Tac Toe game.
@@ -65,9 +61,8 @@ export class Game extends AggregateRoot {
   ) {
     super();
 
-    this.moves.forEach((move) => {
-      this.board[move.row][move.column] = move;
-    });
+    this.prepareBoard();
+    this.computeCurrentPlayer();
   }
 
   /**
@@ -92,10 +87,7 @@ export class Game extends AggregateRoot {
    */
   public playerJoin(playerId: PlayerId): Result<void> {
     if (this.isFull()) {
-      if (
-        this.playerOneId?.equals(playerId) ||
-        this.playerTwoId?.equals(playerId)
-      ) {
+      if (this.playerOneId?.equals(playerId) || this.playerTwoId?.equals(playerId)) {
         return Success.of(undefined);
       }
 
@@ -129,6 +121,14 @@ export class Game extends AggregateRoot {
    */
   public getPlayerTwoId(): PlayerId | undefined {
     return this.playerTwoId;
+  }
+
+  /**
+   * Returns the current player of the game.
+   * @returns The current player or undefined if no player is set.
+   */
+  public getCurrentPlayer(): PlayerId | undefined {
+    return this.currentPlayer;
   }
 
   /**
@@ -181,18 +181,18 @@ export class Game extends AggregateRoot {
   public place(move: Move): Result<GameState> {
     const { row, column, playerId } = move;
 
-    if (this.currentPlayer && playerId.equals(this.currentPlayer)) {
-      return Failure.of(
-        new Error(`Player with id: ${playerId.value} has already placed a move`)
-      );
-    }
-
     if (
       this.playerOneId?.equals(playerId) === false &&
       this.playerTwoId?.equals(playerId) === false
     ) {
       return Failure.of(
         new Error(`Player with id: ${playerId.value} is not part of the game`)
+      );
+    }
+
+    if (this.currentPlayer && playerId.equals(this.currentPlayer) === false) {
+      return Failure.of(
+        new Error(`Player with id: ${playerId.value} has already placed a move`)
       );
     }
 
@@ -213,11 +213,13 @@ export class Game extends AggregateRoot {
     }
 
     this.board[row][column] = move;
-    this.currentPlayer = playerId;
+    this.currentPlayer = this.playerOneId?.equals(playerId)
+      ? this.playerTwoId
+      : this.playerOneId;
 
     this.apply(new PlayerMoved(this.id, playerId, move.id));
 
-    const gameState = this.gameState();
+    const gameState = this.gameState(playerId);
     if (gameState.isEnded()) {
       this.apply(new GameEnded(this.id));
     }
@@ -234,10 +236,37 @@ export class Game extends AggregateRoot {
   }
 
   /**
+   * Prepares the game board by populating it with the moves.
+   */
+  private prepareBoard(): void {
+    this.moves.forEach((move) => {
+      this.board[move.row][move.column] = move;
+    });
+  }
+
+  /**
+   * Computes the current player based on the moves in the game.
+   */
+  private computeCurrentPlayer(): void {
+    if (this.moves.length === 0) {
+      this.currentPlayer = this.playerOneId;
+      return;
+    }
+
+    const lastMove = this.moves[this.moves.length - 1];
+
+    if (this.playerOneId?.equals(lastMove.playerId)) {
+      this.currentPlayer = this.playerTwoId;
+    } else {
+      this.currentPlayer = this.playerOneId;
+    }
+  }
+
+  /**
    * Returns the current state of the game.
    * @returns {GameState} The current state of the game.
    */
-  private gameState(): GameState {
+  private gameState(lastMoveBy: PlayerId): GameState {
     // Check for horizontal win
     if (
       (this.checkMarksAreEquals([0, 0], [0, 1]) &&
@@ -247,7 +276,7 @@ export class Game extends AggregateRoot {
       (this.checkMarksAreEquals([2, 0], [2, 1]) &&
         this.checkMarksAreEquals([2, 1], [2, 2]))
     ) {
-      return GameState.of("Horizontal Win", this.currentPlayer);
+      return GameState.of("Horizontal Win", lastMoveBy);
     }
 
     // Check for vertical win
@@ -259,7 +288,7 @@ export class Game extends AggregateRoot {
       (this.checkMarksAreEquals([0, 2], [1, 2]) &&
         this.checkMarksAreEquals([1, 2], [2, 2]))
     ) {
-      return GameState.of("Vertical Win", this.currentPlayer);
+      return GameState.of("Vertical Win", lastMoveBy);
     }
 
     // Check for diagonal win
@@ -269,7 +298,7 @@ export class Game extends AggregateRoot {
       (this.checkMarksAreEquals([0, 2], [1, 1]) &&
         this.checkMarksAreEquals([1, 1], [2, 0]))
     ) {
-      return GameState.of("Diagonal Win", this.currentPlayer);
+      return GameState.of("Diagonal Win", lastMoveBy);
     }
 
     if (this.boardIsFull()) {

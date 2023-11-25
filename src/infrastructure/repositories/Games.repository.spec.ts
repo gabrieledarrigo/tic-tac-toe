@@ -57,7 +57,11 @@ describe("GamesRepository", () => {
           id: "id",
         },
         include: {
-          moves: true,
+          moves: {
+            orderBy: {
+              createdAt: "asc",
+            },
+          },
         },
       });
       expect(actual).toEqual(expectedGame);

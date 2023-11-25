@@ -25,7 +25,11 @@ export class GamesRepository implements Games {
         id: id.value,
       },
       include: {
-        moves: true,
+        moves: {
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
       },
     });
 
