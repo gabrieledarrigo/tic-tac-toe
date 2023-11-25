@@ -106,7 +106,7 @@ describe("Game", () => {
       const playerOneId = PlayerId.of("playerOneId");
       const playerTwoId = PlayerId.of("playerTwoId");
 
-      const game = new Game(id);
+      const game = new Game(id, playerOneId);
       game.playerJoin(playerOneId);
 
       expect(game.getPlayerOneId()).toEqual(playerOneId);
@@ -120,7 +120,7 @@ describe("Game", () => {
       const id = GameId.of("id");
       const playerOneId = PlayerId.of("playerOneId");
 
-      const game = new Game(id);
+      const game = new Game(id, playerOneId);
       game.playerJoin(playerOneId);
 
       const actual = game.playerJoin(playerOneId);
@@ -134,7 +134,7 @@ describe("Game", () => {
       const playerOneId = PlayerId.of("playerOneId");
       const playerTwoId = PlayerId.of("playerTwoId");
 
-      const game = new Game(id);
+      const game = new Game(id, playerOneId);
       game.playerJoin(playerOneId);
       game.playerJoin(playerTwoId);
 
@@ -149,7 +149,7 @@ describe("Game", () => {
       const id = GameId.of("id");
       const playerOneId = PlayerId.of("playerOneId");
 
-      const game = new Game(id);
+      const game = new Game(id, playerOneId);
       game.playerJoin(playerOneId);
 
       const actual = game.playerJoin(playerOneId);
@@ -165,7 +165,7 @@ describe("Game", () => {
       const playerTwoId = PlayerId.of("playerTwoId");
       const playerThreeId = PlayerId.of("playerThreeId");
 
-      const game = new Game(id);
+      const game = new Game(id, playerOneId);
       game.playerJoin(playerOneId);
       game.playerJoin(playerTwoId);
 
@@ -177,13 +177,16 @@ describe("Game", () => {
     it("given a player, when joined, then it should add a PlayerJoined event to the list of domain events", () => {
       const id = GameId.of("id");
       const playerOneId = PlayerId.of("playerOneId");
+      const playerTwoId = PlayerId.of("playerTwoId");
 
-      const game = new Game(id);
+      const game = new Game(id, playerOneId);
       game.playerJoin(playerOneId);
+      game.playerJoin(playerTwoId);
 
-      expect(game.pullDomainEvents()).toContainEqual(
-        new PlayerJoined(game.id, playerOneId)
-      );
+      expect(game.pullDomainEvents()).toEqual([
+        new PlayerJoined(game.id, playerOneId),
+        new PlayerJoined(game.id, playerTwoId),
+      ]);
     });
   });
 
@@ -192,10 +195,7 @@ describe("Game", () => {
       const id = GameId.of("id");
       const playerOneId = PlayerId.of("playerOneId");
 
-      const game = new Game(id);
-
-      expect(game.getPlayerOneId()).toBeUndefined();
-
+      const game = new Game(id, playerOneId);
       game.playerJoin(playerOneId);
 
       expect(game.getPlayerOneId()).toEqual(playerOneId);

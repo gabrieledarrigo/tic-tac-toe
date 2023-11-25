@@ -4,30 +4,11 @@ import { Game } from "../../domain/entities/Game";
 import { GameId } from "../../domain/values/GameId";
 import { PlayerId } from "../../domain/values/PlayerId";
 import { createMock } from "../../../test/utils";
-import { Mark, Move } from "../../domain/entities";
+import { Mark } from "../../domain/entities";
 import { MoveId } from "../../domain/values/MoveId";
 
 describe("GameFactory", () => {
   describe("create", () => {
-    it("should create a new Game with no PlayerIds", () => {
-      const gameWithPlayers = createMock<GameGetPayload>({
-        id: "gameId",
-        playerOneId: null,
-        playerTwoId: null,
-        moves: [],
-      });
-
-      const expectedGame = new Game(
-        GameId.of(gameWithPlayers.id),
-        undefined,
-        undefined
-      );
-
-      const game = GameFactory.create(gameWithPlayers);
-
-      expect(game).toEqual(expectedGame);
-    });
-
     it("should create a new Game with both PlayerIds", () => {
       const gameWithPlayers = createMock<GameGetPayload>({
         id: "gameId",
@@ -70,30 +51,10 @@ describe("GameFactory", () => {
       expect(game).toEqual(expectedGame);
     });
 
-    it("should create a new Game with only PlayerId two", () => {
-      const gameWithPlayers = createMock<GameGetPayload>({
-        id: "gameId",
-        playerTwoId: "playerTwoId",
-        moves: [],
-      });
-
-      const playerTwoId = PlayerId.of("playerTwoId");
-
-      const expectedGame = new Game(
-        GameId.of(gameWithPlayers.id),
-        undefined,
-        playerTwoId
-      );
-
-      const game = GameFactory.create(gameWithPlayers);
-
-      expect(game).toEqual(expectedGame);
-    });
-
     it("should create a new Game with the related moves", () => {
       const gameWithMoves = createMock<GameGetPayload>({
         id: "gameId",
-        playerOneId: null,
+        playerOneId: "playerOneId",
         playerTwoId: null,
         moves: [
           {
@@ -107,9 +68,11 @@ describe("GameFactory", () => {
         ],
       });
 
+      const playerOneId = PlayerId.of("playerOneId");
+
       const expectedGame = new Game(
         GameId.of(gameWithMoves.id),
-        undefined,
+        playerOneId,
         undefined,
         [
           {

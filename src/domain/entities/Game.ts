@@ -55,7 +55,7 @@ export class Game extends AggregateRoot {
 
   public constructor(
     public readonly id: GameId,
-    private playerOneId?: PlayerId,
+    private playerOneId: PlayerId,
     private playerTwoId?: PlayerId,
     private readonly moves: Moves = []
   ) {
@@ -87,7 +87,9 @@ export class Game extends AggregateRoot {
    */
   public playerJoin(playerId: PlayerId): Result<void> {
     if (this.isFull()) {
-      if (this.playerOneId?.equals(playerId) || this.playerTwoId?.equals(playerId)) {
+      if (this.playerOneId.equals(playerId) || this.playerTwoId?.equals(playerId)) {
+        this.apply(new PlayerJoined(this.id, playerId));
+
         return Success.of(undefined);
       }
 
@@ -97,6 +99,8 @@ export class Game extends AggregateRoot {
     if (!this.playerOneId) {
       this.playerOneId = playerId;
     } else if (this.playerOneId.equals(playerId)) {
+      this.apply(new PlayerJoined(this.id, playerId));
+
       return Success.of(undefined);
     } else {
       this.playerTwoId = playerId;
@@ -109,9 +113,9 @@ export class Game extends AggregateRoot {
 
   /**
    * Returns the ID of the first player in the game.
-   * @returns The ID of the first player, or undefined if it has not been set.
+   * @returns The ID of the first player
    */
-  public getPlayerOneId(): PlayerId | undefined {
+  public getPlayerOneId(): PlayerId {
     return this.playerOneId;
   }
 
@@ -182,7 +186,7 @@ export class Game extends AggregateRoot {
     const { row, column, playerId } = move;
 
     if (
-      this.playerOneId?.equals(playerId) === false &&
+      this.playerOneId.equals(playerId) === false &&
       this.playerTwoId?.equals(playerId) === false
     ) {
       return Failure.of(
@@ -213,7 +217,7 @@ export class Game extends AggregateRoot {
     }
 
     this.board[row][column] = move;
-    this.currentPlayer = this.playerOneId?.equals(playerId)
+    this.currentPlayer = this.playerOneId.equals(playerId)
       ? this.playerTwoId
       : this.playerOneId;
 
@@ -255,7 +259,7 @@ export class Game extends AggregateRoot {
 
     const lastMove = this.moves[this.moves.length - 1];
 
-    if (this.playerOneId?.equals(lastMove.playerId)) {
+    if (this.playerOneId.equals(lastMove.playerId)) {
       this.currentPlayer = this.playerTwoId;
     } else {
       this.currentPlayer = this.playerOneId;

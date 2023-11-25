@@ -26,9 +26,9 @@ model Player {
 model Game {
   id        String    @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
   ended     Boolean   @db.Boolean() @default(false)
-  playerOneId String? @db.Uuid() @map("player_one_id")
+  playerOneId String  @db.Uuid() @map("player_one_id")
   playerTwoId String? @db.Uuid() @map("player_two_id")
-  playerOne Player?   @relation(name: "player_one", fields: [playerOneId], references: [id])
+  playerOne Player    @relation(name: "player_one", fields: [playerOneId], references: [id])
   playerTwo Player?   @relation(name: "player_two", fields: [playerTwoId], references: [id])
   moves     Move[]
   createdAt DateTime  @db.Timestamptz() @default(now()) @map("created_at")

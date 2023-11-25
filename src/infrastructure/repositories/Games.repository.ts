@@ -47,7 +47,7 @@ export class GamesRepository implements Games {
       },
       create: {
         id: game.id.value,
-        playerOneId: game.getPlayerOneId()?.value,
+        playerOneId: game.getPlayerOneId().value,
         playerTwoId: game.getPlayerTwoId()?.value,
       },
       update: {
