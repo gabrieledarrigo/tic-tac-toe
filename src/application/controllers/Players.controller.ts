@@ -13,11 +13,11 @@ export class PlayersController {
 
   @Post()
   public async newPlayer(
-    @Body() newPlayerRequest: NewPlayerRequest
+    @Body() newPlayerRequest: NewPlayerRequest,
   ): Promise<NewPlayerResponse> {
     const result = (
       await this.commandBus.execute<NewPlayer, Result<PlayerId>>(
-        new NewPlayer(Email.of(newPlayerRequest.email))
+        new NewPlayer(Email.of(newPlayerRequest.email)),
       )
     ).unwrapOrElse((error) => {
       throw new BadRequestException(error);

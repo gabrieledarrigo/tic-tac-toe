@@ -36,11 +36,7 @@ describe("JoinGameCommandHandler", () => {
 
       jest.spyOn(games, "byId").mockResolvedValue(game);
 
-      const commandHandler = new JoinGameCommandHandler(
-        games,
-        players,
-        eventBus
-      );
+      const commandHandler = new JoinGameCommandHandler(games, players, eventBus);
 
       await commandHandler.execute(command);
 
@@ -50,11 +46,7 @@ describe("JoinGameCommandHandler", () => {
     it("should return a failure when the Player does not exist", async () => {
       jest.spyOn(players, "byId").mockResolvedValue(null);
 
-      const commandHandler = new JoinGameCommandHandler(
-        games,
-        players,
-        eventBus
-      );
+      const commandHandler = new JoinGameCommandHandler(games, players, eventBus);
 
       const actual = await commandHandler.execute(command);
 
@@ -74,11 +66,7 @@ describe("JoinGameCommandHandler", () => {
       jest.spyOn(players, "byId").mockResolvedValue(player);
       jest.spyOn(games, "byId").mockResolvedValue(game);
 
-      const commandHandler = new JoinGameCommandHandler(
-        games,
-        players,
-        eventBus
-      );
+      const commandHandler = new JoinGameCommandHandler(games, players, eventBus);
 
       await commandHandler.execute(command);
 
@@ -93,11 +81,7 @@ describe("JoinGameCommandHandler", () => {
       jest.spyOn(players, "byId").mockResolvedValue(player);
       jest.spyOn(games, "byId").mockResolvedValue(null);
 
-      const commandHandler = new JoinGameCommandHandler(
-        games,
-        players,
-        eventBus
-      );
+      const commandHandler = new JoinGameCommandHandler(games, players, eventBus);
 
       const actual = await commandHandler.execute(command);
 
@@ -117,11 +101,7 @@ describe("JoinGameCommandHandler", () => {
       jest.spyOn(players, "byId").mockResolvedValue(player);
       jest.spyOn(games, "byId").mockResolvedValue(game);
 
-      const commandHandler = new JoinGameCommandHandler(
-        games,
-        players,
-        eventBus
-      );
+      const commandHandler = new JoinGameCommandHandler(games, players, eventBus);
 
       await commandHandler.execute(command);
 
@@ -130,9 +110,7 @@ describe("JoinGameCommandHandler", () => {
 
     it("should return a failure if the Player cannot join the Game", async () => {
       const game = createMock<Game>({
-        playerJoin: jest
-          .fn()
-          .mockReturnValue(Failure.of(new Error("Game is full"))),
+        playerJoin: jest.fn().mockReturnValue(Failure.of(new Error("Game is full"))),
         pullDomainEvents: jest.fn(),
       });
 
@@ -143,11 +121,7 @@ describe("JoinGameCommandHandler", () => {
       jest.spyOn(players, "byId").mockResolvedValue(player);
       jest.spyOn(games, "byId").mockResolvedValue(game);
 
-      const commandHandler = new JoinGameCommandHandler(
-        games,
-        players,
-        eventBus
-      );
+      const commandHandler = new JoinGameCommandHandler(games, players, eventBus);
 
       const actual = await commandHandler.execute(command);
 
@@ -167,11 +141,7 @@ describe("JoinGameCommandHandler", () => {
       jest.spyOn(players, "byId").mockResolvedValue(player);
       jest.spyOn(games, "byId").mockResolvedValue(game);
 
-      const commandHandler = new JoinGameCommandHandler(
-        games,
-        players,
-        eventBus
-      );
+      const commandHandler = new JoinGameCommandHandler(games, players, eventBus);
 
       await commandHandler.execute(command);
 
@@ -193,11 +163,7 @@ describe("JoinGameCommandHandler", () => {
       jest.spyOn(players, "byId").mockResolvedValue(player);
       jest.spyOn(games, "byId").mockResolvedValue(game);
 
-      const commandHandler = new JoinGameCommandHandler(
-        games,
-        players,
-        eventBus
-      );
+      const commandHandler = new JoinGameCommandHandler(games, players, eventBus);
 
       await commandHandler.execute(command);
 

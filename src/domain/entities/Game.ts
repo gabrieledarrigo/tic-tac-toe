@@ -57,7 +57,7 @@ export class Game extends AggregateRoot {
     public readonly id: GameId,
     private playerOneId: PlayerId,
     private playerTwoId?: PlayerId,
-    private readonly moves: Moves = []
+    private readonly moves: Moves = [],
   ) {
     super();
 
@@ -190,13 +190,13 @@ export class Game extends AggregateRoot {
       this.playerTwoId?.equals(playerId) === false
     ) {
       return Failure.of(
-        new Error(`Player with id: ${playerId.value} is not part of the game`)
+        new Error(`Player with id: ${playerId.value} is not part of the game`),
       );
     }
 
     if (this.currentPlayer && playerId.equals(this.currentPlayer) === false) {
       return Failure.of(
-        new Error(`Player with id: ${playerId.value} has already placed a move`)
+        new Error(`Player with id: ${playerId.value} has already placed a move`),
       );
     }
 
@@ -320,7 +320,7 @@ export class Game extends AggregateRoot {
    */
   private checkMarksAreEquals(
     firstCellPosition: [RowOrColumnValue, RowOrColumnValue],
-    secondCellPosition: [RowOrColumnValue, RowOrColumnValue]
+    secondCellPosition: [RowOrColumnValue, RowOrColumnValue],
   ): boolean {
     const firstCell = this.getCell(...firstCellPosition);
     const secondCell = this.getCell(...secondCellPosition);

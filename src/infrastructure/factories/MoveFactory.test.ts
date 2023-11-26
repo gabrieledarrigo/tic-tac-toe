@@ -27,7 +27,7 @@ describe("MoveFactory", () => {
         PlayerId.of("playerId"),
         0,
         0,
-        Mark.X
+        Mark.X,
       );
 
       const actualMove = MoveFactory.create(moveGetPayload);

@@ -13,7 +13,7 @@ describe("Email", () => {
       const invalidEmailValue = "invalid-email";
 
       expect(() => Email.of(invalidEmailValue)).toThrowError(
-        "Invalid email address"
+        "Invalid email address",
       );
     });
   });

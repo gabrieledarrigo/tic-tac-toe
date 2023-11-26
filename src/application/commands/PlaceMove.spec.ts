@@ -75,8 +75,8 @@ describe("PlaceMove", () => {
           command.playerId,
           command.row,
           command.column,
-          command.mark
-        )
+          command.mark,
+        ),
       );
     });
 
@@ -119,9 +119,7 @@ describe("PlaceMove", () => {
         place: jest.fn().mockReturnValue(Success.of(GameState.of("Draw"))),
         pullDomainEvents: jest
           .fn()
-          .mockReturnValue([
-            new PlayerMoved(gameId, playerId, MoveId.of("moveId")),
-          ]),
+          .mockReturnValue([new PlayerMoved(gameId, playerId, MoveId.of("moveId"))]),
       });
 
       jest.spyOn(games, "byId").mockResolvedValue(game);

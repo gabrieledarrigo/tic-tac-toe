@@ -513,24 +513,24 @@ describe("Game", () => {
         ],
         playerMove: [PlayerId.of("playerOneId"), 0, 2, Mark.X],
       },
-      // {
-      //   history: [
-      //     [PlayerId.of("playerOneId"), 1, 0, Mark.X],
-      //     [PlayerId.of("playerTwoId"), 0, 0, Mark.O],
-      //     [PlayerId.of("playerOneId"), 1, 1, Mark.X],
-      //     [PlayerId.of("playerTwoId"), 0, 1, Mark.O],
-      //   ],
-      //   playerMove: [PlayerId.of("playerOneId"), 1, 2, Mark.X],
-      // },
-      // {
-      //   history: [
-      //     [PlayerId.of("playerOneId"), 2, 0, Mark.X],
-      //     [PlayerId.of("playerTwoId"), 1, 0, Mark.O],
-      //     [PlayerId.of("playerOneId"), 2, 1, Mark.X],
-      //     [PlayerId.of("playerTwoId"), 1, 1, Mark.O],
-      //   ],
-      //   playerMove: [PlayerId.of("playerOneId"), 2, 2, Mark.X],
-      // },
+      {
+        history: [
+          [PlayerId.of("playerOneId"), 1, 0, Mark.X],
+          [PlayerId.of("playerTwoId"), 0, 0, Mark.O],
+          [PlayerId.of("playerOneId"), 1, 1, Mark.X],
+          [PlayerId.of("playerTwoId"), 0, 1, Mark.O],
+        ],
+        playerMove: [PlayerId.of("playerOneId"), 1, 2, Mark.X],
+      },
+      {
+        history: [
+          [PlayerId.of("playerOneId"), 2, 0, Mark.X],
+          [PlayerId.of("playerTwoId"), 1, 0, Mark.O],
+          [PlayerId.of("playerOneId"), 2, 1, Mark.X],
+          [PlayerId.of("playerTwoId"), 1, 1, Mark.O],
+        ],
+        playerMove: [PlayerId.of("playerOneId"), 2, 2, Mark.X],
+      },
     ])(
       "should return a GameState with the winner when the Player has won the game with a horizontal line",
       ({ history, playerMove }) => {
@@ -564,7 +564,7 @@ describe("Game", () => {
           state: "Horizontal Win",
           winner: playerId,
         });
-      }
+      },
     );
 
     it.each<{
@@ -631,7 +631,7 @@ describe("Game", () => {
           state: "Vertical Win",
           winner: playerId,
         });
-      }
+      },
     );
 
     it.each<{
@@ -689,7 +689,7 @@ describe("Game", () => {
           state: "Diagonal Win",
           winner: playerId,
         });
-      }
+      },
     );
 
     it("should return a Draw GameState when the board is full and no player won", () => {

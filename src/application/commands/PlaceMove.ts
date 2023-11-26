@@ -12,7 +12,7 @@ export class PlaceMove {
     public readonly playerId: PlayerId,
     public readonly row: RowOrColumnValue,
     public readonly column: RowOrColumnValue,
-    public readonly mark: Mark
+    public readonly mark: Mark,
   ) {}
 }
 
@@ -22,7 +22,7 @@ export class PlaceMoveCommandHandler
 {
   constructor(
     private readonly games: GamesRepository,
-    public readonly eventBus: EventBus
+    public readonly eventBus: EventBus,
   ) {}
 
   public async execute(command: PlaceMove): Promise<Result<GameState>> {
@@ -31,16 +31,12 @@ export class PlaceMoveCommandHandler
     const game = await this.games.byId(gameId);
 
     if (!game) {
-      return Failure.of(
-        new Error(`Game with id ${gameId.value} does not exist`)
-      );
+      return Failure.of(new Error(`Game with id ${gameId.value} does not exist`));
     }
 
     const moveId = this.games.nextMoveIdentity();
 
-    const placed = game.place(
-      new Move(moveId, gameId, playerId, row, column, mark)
-    );
+    const placed = game.place(new Move(moveId, gameId, playerId, row, column, mark));
 
     if (placed.isFailure()) {
       return placed;

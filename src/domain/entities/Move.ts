@@ -35,6 +35,6 @@ export class Move {
     public readonly playerId: PlayerId,
     public readonly row: RowOrColumnValue,
     public readonly column: RowOrColumnValue,
-    public readonly mark: Mark
+    public readonly mark: Mark,
   ) {}
 }

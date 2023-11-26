@@ -46,7 +46,7 @@ describe("GamesRepository", () => {
       const expectedGame = new Game(
         GameId.of("id"),
         PlayerId.of("playerOneId"),
-        PlayerId.of("playerTwoId")
+        PlayerId.of("playerTwoId"),
       );
 
       const games = new GamesRepository(prisma);

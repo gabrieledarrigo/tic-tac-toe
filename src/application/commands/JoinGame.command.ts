@@ -8,7 +8,7 @@ import { PlayersRepository } from "../../infrastructure/repositories/Players.rep
 export class JoinGame {
   constructor(
     public readonly gameId: GameId,
-    public readonly playerId: PlayerId
+    public readonly playerId: PlayerId,
   ) {}
 }
 
@@ -19,7 +19,7 @@ export class JoinGameCommandHandler
   constructor(
     private readonly games: GamesRepository,
     private readonly players: PlayersRepository,
-    private readonly eventBus: EventBus
+    private readonly eventBus: EventBus,
   ) {}
 
   public async execute(command: JoinGame): Promise<Result<void>> {
@@ -27,9 +27,7 @@ export class JoinGameCommandHandler
     const player = await this.players.byId(playerId);
 
     if (!player) {
-      return Failure.of(
-        new Error(`Player with id ${playerId.value} not found`)
-      );
+      return Failure.of(new Error(`Player with id ${playerId.value} not found`));
     }
 
     const game = await this.games.byId(gameId);

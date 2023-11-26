@@ -12,7 +12,7 @@ export class MoveFactory {
       PlayerId.of(move.playerId),
       move.row as RowOrColumnValue,
       move.column as RowOrColumnValue,
-      move.mark as Mark
+      move.mark as Mark,
     );
   }
 }

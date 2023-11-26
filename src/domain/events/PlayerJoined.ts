@@ -5,7 +5,7 @@ import { PlayerId } from "../values/PlayerId";
 export class PlayerJoined extends DomainEvent {
   constructor(
     public readonly gameId: GameId,
-    public readonly playerId: PlayerId
+    public readonly playerId: PlayerId,
   ) {
     super();
   }

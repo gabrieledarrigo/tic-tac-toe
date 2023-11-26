@@ -41,9 +41,7 @@ describe("NewGameCommandHandler", () => {
 
       await commandHandler.execute(new NewGame(playerOneId));
 
-      expect(eventBus.publishAll).toHaveBeenCalledWith([
-        new NewGameCreated(gameId),
-      ]);
+      expect(eventBus.publishAll).toHaveBeenCalledWith([new NewGameCreated(gameId)]);
     });
 
     it("should return the new GameId", async () => {

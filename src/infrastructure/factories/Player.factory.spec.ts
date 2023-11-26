@@ -15,7 +15,7 @@ describe("PlayerFactory", () => {
 
       const expectedPlayer = new Player(
         PlayerId.of(repositoryPlayer.id),
-        Email.of(repositoryPlayer.email)
+        Email.of(repositoryPlayer.email),
       );
 
       const player = PlayerFactory.create(repositoryPlayer);

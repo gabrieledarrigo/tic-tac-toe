@@ -7,7 +7,7 @@ export class PlayerMoved extends DomainEvent {
   public constructor(
     public readonly gameId: GameId,
     public readonly playerId: PlayerId,
-    public readonly moveId: MoveId
+    public readonly moveId: MoveId,
   ) {
     super();
   }

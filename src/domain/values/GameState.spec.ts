@@ -27,7 +27,7 @@ describe("GameState", () => {
         const gameState = GameState.of("Horizontal Win");
 
         expect(gameState.isEnded()).toBe(true);
-      }
+      },
     );
   });
 });

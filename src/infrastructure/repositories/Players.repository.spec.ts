@@ -71,10 +71,7 @@ describe("PlayersRepository", () => {
 
   describe("persist", () => {
     it("should persist the player", async () => {
-      const player = new Player(
-        PlayerId.of("id"),
-        Email.of("player@example.com")
-      );
+      const player = new Player(PlayerId.of("id"), Email.of("player@example.com"));
 
       const repository = new PlayersRepository(prisma);
       await repository.persist(player);

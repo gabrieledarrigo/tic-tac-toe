@@ -13,7 +13,10 @@ export class Player extends AggregateRoot {
    * @param id - The unique identifier of the player.
    * @param email - The email address of the player.
    */
-  constructor(public readonly id: PlayerId, public readonly email: Email) {
+  constructor(
+    public readonly id: PlayerId,
+    public readonly email: Email,
+  ) {
     super();
   }
 

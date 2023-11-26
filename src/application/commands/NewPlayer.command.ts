@@ -15,7 +15,7 @@ export class NewPlayerCommandHandler
 {
   constructor(
     private readonly players: PlayersRepository,
-    private readonly eventBus: EventBus
+    private readonly eventBus: EventBus,
   ) {}
 
   public async execute(command: NewPlayer): Promise<Result<PlayerId>> {

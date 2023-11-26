@@ -16,11 +16,6 @@ export class GameFactory {
       return MoveFactory.create(move);
     });
 
-    return new Game(
-      GameId.of(game.id),
-      playerOneId,
-      playerTwoId,
-      moves as Moves
-    );
+    return new Game(GameId.of(game.id), playerOneId, playerTwoId, moves as Moves);
   }
 }
