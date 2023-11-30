@@ -217,22 +217,40 @@ describe("Game", () => {
     });
   });
 
-  describe("getMoves", () => {
-    it("should return the Moves made in the Game", () => {
+  describe("getMovesFromBoard", () => {
+    it("should return the Moves made in the Game, ordered by the date on which they were placed", () => {
       const id = GameId.of("id");
       const playerOneId = PlayerId.of("playerOneId");
       const playerTwoId = PlayerId.of("playerTwoId");
 
       const moves: Moves = [
-        createMock<Move>({ row: 0, column: 0, mark: Mark.X, playerId: playerOneId }),
-        createMock<Move>({ row: 1, column: 0, mark: Mark.O, playerId: playerTwoId }),
-        createMock<Move>({ row: 2, column: 2, mark: Mark.X, playerId: playerOneId }),
+        createMock<Move>({
+          row: 0,
+          column: 0,
+          mark: Mark.X,
+          playerId: playerOneId,
+          placedAt: new Date("2023-02-01"),
+        }),
+        createMock<Move>({
+          row: 1,
+          column: 0,
+          mark: Mark.O,
+          playerId: playerTwoId,
+          placedAt: new Date("2023-01-01"),
+        }),
+        createMock<Move>({
+          row: 2,
+          column: 2,
+          mark: Mark.X,
+          playerId: playerOneId,
+          placedAt: new Date("2023-03-01"),
+        }),
       ];
 
       const game = new Game(id, playerOneId, playerTwoId, moves);
-      const actual = game.getMoves();
+      const actual = game.getMovesFromBoard();
 
-      expect(actual).toEqual(moves);
+      expect(actual).toEqual([moves[1], moves[0], moves[2]]);
     });
   });
 
@@ -564,7 +582,7 @@ describe("Game", () => {
           state: "Horizontal Win",
           winner: playerId,
         });
-      },
+      }
     );
 
     it.each<{
@@ -631,7 +649,7 @@ describe("Game", () => {
           state: "Vertical Win",
           winner: playerId,
         });
-      },
+      }
     );
 
     it.each<{
@@ -689,7 +707,7 @@ describe("Game", () => {
           state: "Diagonal Win",
           winner: playerId,
         });
-      },
+      }
     );
 
     it("should return a Draw GameState when the board is full and no player won", () => {

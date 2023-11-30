@@ -13,6 +13,7 @@ export class MoveFactory {
       move.row as RowOrColumnValue,
       move.column as RowOrColumnValue,
       move.mark as Mark,
+      move.placedAt
     );
   }
 }

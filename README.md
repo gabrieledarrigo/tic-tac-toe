@@ -22,7 +22,7 @@ Example:
 ```bash
 $ curl -H "Content-Type: application/json" -d '{"email": "player.one@example.com"}' http://localhost:3000/api/players
 
-{"id":""d7ee29b3-cfdf-4643-b2e9-51c152c609a5"}
+{"id":"d7ee29b3-cfdf-4643-b2e9-51c152c609a5"}
 ```
 
 ### POST /api/games

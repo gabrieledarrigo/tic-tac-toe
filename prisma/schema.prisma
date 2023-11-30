@@ -47,6 +47,7 @@ model Move {
   row       Int       @db.SmallInt()
   column    Int       @db.SmallInt()
   mark      Mark
+  placedAt  DateTime  @db.Timestamptz() @default(now()) @map("placed_at")
   createdAt DateTime  @db.Timestamptz() @default(now()) @map("created_at")
   updatedAt DateTime  @db.Timestamptz() @updatedAt @map("updated_at")
   deletedAt DateTime? @db.Timestamptz() @map("deleted_at")

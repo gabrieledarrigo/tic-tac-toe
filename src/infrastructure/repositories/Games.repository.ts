@@ -27,7 +27,7 @@ export class GamesRepository implements Games {
       include: {
         moves: {
           orderBy: {
-            createdAt: "asc",
+            placedAt: "asc",
           },
         },
       },
@@ -51,25 +51,29 @@ export class GamesRepository implements Games {
         playerTwoId: game.getPlayerTwoId()?.value,
       },
       update: {
+        playerTwoId: game.getPlayerTwoId()?.value,
         moves: {
           upsert: [
-            ...game.getMoves().map(({ id, playerId, row, column, mark }) => {
-              const move = {
-                id: id.value,
-                playerId: playerId.value,
-                row: row,
-                column: column,
-                mark: mark,
-              };
+            ...game
+              .getMovesFromBoard()
+              .map(({ id, playerId, row, column, mark, placedAt }) => {
+                const move = {
+                  id: id.value,
+                  playerId: playerId.value,
+                  row: row,
+                  column: column,
+                  mark: mark,
+                  placedAt,
+                };
 
-              return {
-                where: {
-                  id: move.id,
-                },
-                create: move,
-                update: move,
-              };
-            }),
+                return {
+                  where: {
+                    id: move.id,
+                  },
+                  create: move,
+                  update: move,
+                };
+              }),
           ],
         },
       },

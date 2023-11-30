@@ -28,6 +28,7 @@ export class Move {
    * @param {0|1|2} row - The row where the move was made.
    * @param {0|1|2} column - The column where the move was made.
    * @param {Mark} mark - The mark (X or O) made by the player.
+   * @param {Date} placedAt - The date at which the move was placed by a player on the game board.
    */
   constructor(
     public readonly id: MoveId,
@@ -36,5 +37,6 @@ export class Move {
     public readonly row: RowOrColumnValue,
     public readonly column: RowOrColumnValue,
     public readonly mark: Mark,
+    public readonly placedAt: Date = new Date()
   ) {}
 }

@@ -23,7 +23,7 @@ describe("GameFactory", () => {
       const expectedGame = new Game(
         GameId.of(gameWithPlayers.id),
         playerOneId,
-        playerTwoId,
+        playerTwoId
       );
 
       const game = GameFactory.create(gameWithPlayers);
@@ -43,7 +43,7 @@ describe("GameFactory", () => {
       const expectedGame = new Game(
         GameId.of(gameWithPlayers.id),
         playerOneId,
-        undefined,
+        undefined
       );
 
       const game = GameFactory.create(gameWithPlayers);
@@ -82,8 +82,9 @@ describe("GameFactory", () => {
             row: 1,
             column: 1,
             mark: Mark.X,
+            placedAt: new Date(),
           },
-        ],
+        ]
       );
 
       const game = GameFactory.create(gameWithMoves);

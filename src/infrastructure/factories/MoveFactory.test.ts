@@ -16,6 +16,7 @@ describe("MoveFactory", () => {
         row: 0,
         column: 0,
         mark: Mark.X,
+        placedAt: new Date("01/01/2023"),
         createdAt: new Date(),
         updatedAt: new Date(),
         deletedAt: null,
@@ -28,6 +29,7 @@ describe("MoveFactory", () => {
         0,
         0,
         Mark.X,
+        new Date("01/01/2023")
       );
 
       const actualMove = MoveFactory.create(moveGetPayload);

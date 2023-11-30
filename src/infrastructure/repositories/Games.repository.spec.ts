@@ -46,7 +46,7 @@ describe("GamesRepository", () => {
       const expectedGame = new Game(
         GameId.of("id"),
         PlayerId.of("playerOneId"),
-        PlayerId.of("playerTwoId"),
+        PlayerId.of("playerTwoId")
       );
 
       const games = new GamesRepository(prisma);
@@ -59,7 +59,7 @@ describe("GamesRepository", () => {
         include: {
           moves: {
             orderBy: {
-              createdAt: "asc",
+              placedAt: "asc",
             },
           },
         },
@@ -89,6 +89,7 @@ describe("GamesRepository", () => {
           row: 0,
           column: 0,
           mark: Mark.X,
+          placedAt: new Date(),
         }),
       ];
 
@@ -98,6 +99,7 @@ describe("GamesRepository", () => {
         row: moves[0].row,
         column: moves[0].column,
         mark: moves[0].mark,
+        placedAt: moves[0].placedAt,
       };
 
       const game = new Game(GameId.of("id"), playerOneId, playerTwoId, moves);
@@ -115,6 +117,7 @@ describe("GamesRepository", () => {
           playerTwoId: playerTwoId?.value,
         },
         update: {
+          playerTwoId: playerTwoId?.value,
           moves: {
             upsert: [
               {
