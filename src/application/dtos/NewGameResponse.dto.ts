@@ -1,3 +1,11 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { GameId } from "../../domain/values/GameId";
+
 export class NewGameResponse {
-  constructor(public readonly id: string) {}
+  @ApiProperty({ format: "uuid" })
+  public readonly id: string;
+
+  constructor(id: GameId) {
+    this.id = id.value;
+  }
 }

@@ -7,7 +7,7 @@ import { Email } from "../../domain/values/Email";
 import { NewPlayerRequest } from "../dtos/NewPlayerRequest.dto";
 import { NewPlayerResponse } from "../dtos/NewPlayerResponse.dto";
 
-@Controller("/api/players")
+@Controller("/players")
 export class PlayersController {
   constructor(private readonly commandBus: CommandBus) {}
 
@@ -23,6 +23,6 @@ export class PlayersController {
       throw new BadRequestException(error);
     });
 
-    return new NewPlayerResponse(result.value);
+    return new NewPlayerResponse(result);
   }
 }

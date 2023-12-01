@@ -18,33 +18,34 @@ import { PlaceMoveRequest } from "../dtos/PlaceMoveRequest.dto";
 import { PlaceMove } from "../commands/PlaceMove";
 import { GameState } from "../../domain/values/GameState";
 import { NewGameRequest } from "../dtos/NewGameRequest.dto";
+import { PlaceMoveResponse } from "../dtos/PlaceMoveResponse.dto";
 
-@Controller("/api/games")
+@Controller("/games")
 export class GamesController {
   constructor(private readonly commandBus: CommandBus) {}
 
   @Post()
   public async newGame(
-    @Body() newGameRequest: NewGameRequest
+    @Body() newGameRequest: NewGameRequest,
   ): Promise<NewGameResponse> {
     const result = (
       await this.commandBus.execute<NewGame, Result<GameId>>(
-        new NewGame(PlayerId.of(newGameRequest.playerOneId))
+        new NewGame(PlayerId.of(newGameRequest.playerOneId)),
       )
     ).unwrapOrElse((error) => {
       throw new BadRequestException(error);
     });
 
-    return new NewGameResponse(result.value);
+    return new NewGameResponse(result);
   }
 
   @Post(":id")
   public async joinGame(
     @Param("id", ParseUUIDPipe) gameId: string,
-    @Body() joinGameRequest: JoinGameRequest
+    @Body() joinGameRequest: JoinGameRequest,
   ): Promise<void> {
     const result = await this.commandBus.execute<JoinGame, Result<void>>(
-      new JoinGame(GameId.of(gameId), PlayerId.of(joinGameRequest.playerId))
+      new JoinGame(GameId.of(gameId), PlayerId.of(joinGameRequest.playerId)),
     );
 
     return result.unwrapOrElse((error) => {
@@ -55,20 +56,22 @@ export class GamesController {
   @Post(":id/moves")
   public async placeMove(
     @Param("id", ParseUUIDPipe) gameId: string,
-    @Body() placeMoveRequest: PlaceMoveRequest
-  ): Promise<GameState> {
-    const result = await this.commandBus.execute<PlaceMove, Result<GameState>>(
-      new PlaceMove(
-        GameId.of(gameId),
-        PlayerId.of(placeMoveRequest.playerId),
-        placeMoveRequest.row,
-        placeMoveRequest.column,
-        placeMoveRequest.mark
+    @Body() placeMoveRequest: PlaceMoveRequest,
+  ): Promise<PlaceMoveResponse> {
+    const gameState = (
+      await this.commandBus.execute<PlaceMove, Result<GameState>>(
+        new PlaceMove(
+          GameId.of(gameId),
+          PlayerId.of(placeMoveRequest.playerId),
+          placeMoveRequest.row,
+          placeMoveRequest.column,
+          placeMoveRequest.mark,
+        ),
       )
-    );
-
-    return result.unwrapOrElse((error) => {
+    ).unwrapOrElse((error) => {
       throw new BadRequestException(error.message);
     });
+
+    return new PlaceMoveResponse(gameState);
   }
 }
