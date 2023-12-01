@@ -6,7 +6,10 @@ import { GamesRepository } from "../../infrastructure/repositories/Games.reposit
 import { PlayersRepository } from "../../infrastructure/repositories/Players.repository";
 
 export class JoinGame {
-  constructor(public readonly gameId: GameId, public readonly playerId: PlayerId) {}
+  constructor(
+    public readonly gameId: GameId,
+    public readonly playerId: PlayerId,
+  ) {}
 }
 
 @CommandHandler(JoinGame)
