@@ -1,11 +1,12 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./App.module";
+import { setupAPIDoc } from "./config/swagger";
 import { ValidationPipe } from "@nestjs/common";
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+export const API_VERSION = "v1";
 
-  await app
+async function bootstrap() {
+  const app = (await NestFactory.create(AppModule))
     .enableShutdownHooks()
     .useGlobalPipes(
       new ValidationPipe({
@@ -13,7 +14,10 @@ async function bootstrap() {
         transform: true,
       }),
     )
-    .listen(3000);
+    .setGlobalPrefix(`api/${API_VERSION}`);
+  setupAPIDoc(app);
+
+  await app.listen(3000);
 }
 
 bootstrap();
