@@ -369,29 +369,33 @@ describe("Game", () => {
       ]);
     });
 
-    it("should return an error when the player try to place two moves", () => {
+    it("should return an error if the Game ended", () => {
       const id = GameId.of("id");
       const playerOneId = PlayerId.of("playerOneId");
       const playerTwoId = PlayerId.of("playerTwoId");
 
+      const moves: Moves = [
+        createMock<Move>({ row: 0, column: 0, mark: Mark.X, playerId: playerOneId }),
+        createMock<Move>({ row: 1, column: 0, mark: Mark.O, playerId: playerTwoId }),
+        createMock<Move>({ row: 0, column: 1, mark: Mark.X, playerId: playerOneId }),
+        createMock<Move>({ row: 1, column: 1, mark: Mark.O, playerId: playerTwoId }),
+        createMock<Move>({ row: 0, column: 2, mark: Mark.X, playerId: playerOneId }),
+      ];
+
+      const game = new Game(id, playerOneId, playerTwoId, moves);
+
       const move = createMock<Move>({
         gameId: GameId.of("gameId"),
-        playerId: playerOneId,
-        row: 0,
-        column: 0,
-        mark: Mark.X,
+        playerId: playerTwoId,
+        row: 1,
+        column: 2,
+        mark: Mark.O,
       });
 
-      const game = new Game(id, playerOneId, playerTwoId);
-      game.place(move);
-      const actual = game.place({
-        ...move,
-        row: 1,
-        column: 1,
-      });
+      const actual = game.place(move);
 
       expect(actual).toEqual({
-        error: new Error("Player with id: playerOneId has already placed a move"),
+        error: new Error("Game is ended"),
       });
     });
 
@@ -415,6 +419,34 @@ describe("Game", () => {
 
       expect(actual).toEqual({
         error: new Error("Player with id: playerThreeId is not part of the game"),
+      });
+    });
+
+    it("should return an error when the player try to place two moves", () => {
+      const id = GameId.of("id");
+      const playerOneId = PlayerId.of("playerOneId");
+      const playerTwoId = PlayerId.of("playerTwoId");
+
+      const move = createMock<Move>({
+        gameId: GameId.of("gameId"),
+        playerId: playerOneId,
+        row: 0,
+        column: 0,
+        mark: Mark.X,
+      });
+
+      const game = new Game(id, playerOneId, playerTwoId);
+      game.place(move);
+      const actual = game.place({
+        ...move,
+        row: 1,
+        column: 1,
+      });
+
+      expect(actual).toEqual({
+        error: new Error(
+          "Player with id: playerOneId cannot move. Current player turn is: playerTwoId",
+        ),
       });
     });
 
@@ -790,26 +822,25 @@ describe("Game", () => {
       expect(actual).toEqual([new PlayerMoved(id, playerOneId, move.id)]);
     });
 
-    it("should apply a GameEnded event when the game is ended", () => {
+    it("should apply a GameEnded event when the game is ended after a Player places a move", () => {
       const id = GameId.of("id");
       const playerOneId = PlayerId.of("playerOneId");
       const playerTwoId = PlayerId.of("playerTwoId");
 
       const moves: Moves = [
         createMock<Move>({ row: 0, column: 0, mark: Mark.X, playerId: playerOneId }),
-        createMock<Move>({ row: 0, column: 1, mark: Mark.O, playerId: playerTwoId }),
-        createMock<Move>({ row: 0, column: 2, mark: Mark.X, playerId: playerOneId }),
-        createMock<Move>({ row: 1, column: 0, mark: Mark.O, playerId: playerTwoId }),
-        createMock<Move>({ row: 1, column: 1, mark: Mark.X, playerId: playerOneId }),
-        createMock<Move>({ row: 1, column: 2, mark: Mark.O, playerId: playerTwoId }),
+        createMock<Move>({ row: 1, column: 1, mark: Mark.O, playerId: playerTwoId }),
+        createMock<Move>({ row: 0, column: 1, mark: Mark.X, playerId: playerOneId }),
+        createMock<Move>({ row: 0, column: 2, mark: Mark.O, playerId: playerTwoId }),
         createMock<Move>({ row: 2, column: 0, mark: Mark.X, playerId: playerOneId }),
+        createMock<Move>({ row: 1, column: 0, mark: Mark.O, playerId: playerTwoId }),
+        createMock<Move>({ row: 1, column: 2, mark: Mark.X, playerId: playerOneId }),
         createMock<Move>({ row: 2, column: 1, mark: Mark.O, playerId: playerTwoId }),
       ];
 
       const move = createMock<Move>({
-        id: MoveId.of("moveId"),
         gameId: GameId.of("gameId"),
-        playerId: PlayerId.of("playerOneId"),
+        playerId: playerOneId,
         row: 2,
         column: 2,
         mark: Mark.X,

@@ -194,6 +194,10 @@ export class Game extends AggregateRoot {
   public place(move: Move): Result<GameState> {
     const { row, column, playerId } = move;
 
+    if (this.gameState().isEnded()) {
+      return Failure.of(new Error("Game is ended"));
+    }
+
     if (
       this.playerOneId.equals(playerId) === false &&
       this.playerTwoId?.equals(playerId) === false
@@ -205,7 +209,9 @@ export class Game extends AggregateRoot {
 
     if (this.currentPlayer && playerId.equals(this.currentPlayer) === false) {
       return Failure.of(
-        new Error(`Player with id: ${playerId.value} has already placed a move`),
+        new Error(
+          `Player with id: ${playerId.value} cannot move. Current player turn is: ${this.currentPlayer.value}`,
+        ),
       );
     }
 
@@ -218,10 +224,6 @@ export class Game extends AggregateRoot {
     }
 
     if (this.getCell(row, column) !== null) {
-      if (this.boardIsFull()) {
-        return Failure.of(new Error("Game is ended"));
-      }
-
       return Failure.of(new Error("Cell is not empty"));
     }
 
@@ -277,9 +279,10 @@ export class Game extends AggregateRoot {
 
   /**
    * Returns the current state of the game.
-   * @returns {GameState} The current state of the game.
+   * @param lastMoveBy Optional parameter indicating the player who made the last move.
+   * @returns The current state of the game.
    */
-  private gameState(lastMoveBy: PlayerId): GameState {
+  private gameState(lastMoveBy?: PlayerId): GameState {
     // Check for horizontal win
     if (
       (this.checkMarksAreEquals([0, 0], [0, 1]) &&

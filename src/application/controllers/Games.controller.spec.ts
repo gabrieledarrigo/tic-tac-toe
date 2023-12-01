@@ -1,6 +1,6 @@
 import { BadRequestException } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
-import { Failure, Result, Success } from "../../domain/shared/Result";
+import { Failure, Success } from "../../domain/shared/Result";
 import { GameId } from "../../domain/values/GameId";
 import { GameState } from "../../domain/values/GameState";
 import { JoinGameRequest } from "../dtos/JoinGameRequest.dto";
