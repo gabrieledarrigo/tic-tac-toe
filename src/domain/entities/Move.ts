@@ -37,6 +37,6 @@ export class Move {
     public readonly row: RowOrColumnValue,
     public readonly column: RowOrColumnValue,
     public readonly mark: Mark,
-    public readonly placedAt: Date = new Date()
+    public readonly placedAt: Date = new Date(),
   ) {}
 }

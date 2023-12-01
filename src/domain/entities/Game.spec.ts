@@ -582,7 +582,7 @@ describe("Game", () => {
           state: "Horizontal Win",
           winner: playerId,
         });
-      }
+      },
     );
 
     it.each<{
@@ -649,7 +649,7 @@ describe("Game", () => {
           state: "Vertical Win",
           winner: playerId,
         });
-      }
+      },
     );
 
     it.each<{
@@ -707,7 +707,7 @@ describe("Game", () => {
           state: "Diagonal Win",
           winner: playerId,
         });
-      }
+      },
     );
 
     it("should return a Draw GameState when the board is full and no player won", () => {

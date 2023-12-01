@@ -29,7 +29,7 @@ describe("MoveFactory", () => {
         0,
         0,
         Mark.X,
-        new Date("01/01/2023")
+        new Date("01/01/2023"),
       );
 
       const actualMove = MoveFactory.create(moveGetPayload);

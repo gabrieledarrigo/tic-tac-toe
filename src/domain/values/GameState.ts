@@ -21,7 +21,7 @@ export type State =
 export class GameState {
   private constructor(
     public readonly state: State,
-    public readonly winner?: PlayerId
+    public readonly winner?: PlayerId,
   ) {}
 
   /**
