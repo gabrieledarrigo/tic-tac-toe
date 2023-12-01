@@ -21,7 +21,7 @@ export type State =
 export class GameState {
   private constructor(
     public readonly state: State,
-    public readonly winner?: PlayerId,
+    public readonly winner?: PlayerId
   ) {}
 
   /**
@@ -34,6 +34,10 @@ export class GameState {
     return new GameState(state, winner);
   }
 
+  /**
+   * Checks if the game state is ended.
+   * @returns {boolean} True if the game state is not "In Progress", false otherwise.
+   */
   public isEnded(): boolean {
     return this.state !== "In Progress";
   }

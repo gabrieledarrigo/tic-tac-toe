@@ -1,4 +1,11 @@
-import { BadRequestException, Body, Controller, Param, Post } from "@nestjs/common";
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Param,
+  ParseUUIDPipe,
+  Post,
+} from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 import { NewGame } from "../commands/NewGame.command";
 import { GameId } from "../../domain/values/GameId";
@@ -18,11 +25,11 @@ export class GamesController {
 
   @Post()
   public async newGame(
-    @Body() newGameRequest: NewGameRequest,
+    @Body() newGameRequest: NewGameRequest
   ): Promise<NewGameResponse> {
     const result = (
       await this.commandBus.execute<NewGame, Result<GameId>>(
-        new NewGame(PlayerId.of(newGameRequest.playerOneId)),
+        new NewGame(PlayerId.of(newGameRequest.playerOneId))
       )
     ).unwrapOrElse((error) => {
       throw new BadRequestException(error);
@@ -33,11 +40,11 @@ export class GamesController {
 
   @Post(":id")
   public async joinGame(
-    @Param("id") gameId: string,
-    @Body() joinGameRequest: JoinGameRequest,
+    @Param("id", ParseUUIDPipe) gameId: string,
+    @Body() joinGameRequest: JoinGameRequest
   ): Promise<void> {
     const result = await this.commandBus.execute<JoinGame, Result<void>>(
-      new JoinGame(GameId.of(gameId), PlayerId.of(joinGameRequest.playerId)),
+      new JoinGame(GameId.of(gameId), PlayerId.of(joinGameRequest.playerId))
     );
 
     return result.unwrapOrElse((error) => {
@@ -47,8 +54,8 @@ export class GamesController {
 
   @Post(":id/moves")
   public async placeMove(
-    @Param("id") gameId: string,
-    @Body() placeMoveRequest: PlaceMoveRequest,
+    @Param("id", ParseUUIDPipe) gameId: string,
+    @Body() placeMoveRequest: PlaceMoveRequest
   ): Promise<GameState> {
     const result = await this.commandBus.execute<PlaceMove, Result<GameState>>(
       new PlaceMove(
@@ -56,8 +63,8 @@ export class GamesController {
         PlayerId.of(placeMoveRequest.playerId),
         placeMoveRequest.row,
         placeMoveRequest.column,
-        placeMoveRequest.mark,
-      ),
+        placeMoveRequest.mark
+      )
     );
 
     return result.unwrapOrElse((error) => {
