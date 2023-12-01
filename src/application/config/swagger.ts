@@ -2,7 +2,7 @@ import { INestApplication } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { API_VERSION } from "../main";
 
-export function setupAPIDoc(app: INestApplication<any>) {
+export function setupAPIDoc(app: INestApplication<unknown>) {
   const config = new DocumentBuilder()
     .setTitle("Tic Tac Toe")
     .setDescription("Tic Tac Toe API")

@@ -1,15 +1,12 @@
 import { CommandHandler, EventBus, ICommandHandler } from "@nestjs/cqrs";
-import { Failure, Result, Success } from "../../domain/shared/Result";
+import { Failure, Result } from "../../domain/shared/Result";
 import { GameId } from "../../domain/values/GameId";
 import { PlayerId } from "../../domain/values/PlayerId";
 import { GamesRepository } from "../../infrastructure/repositories/Games.repository";
 import { PlayersRepository } from "../../infrastructure/repositories/Players.repository";
 
 export class JoinGame {
-  constructor(
-    public readonly gameId: GameId,
-    public readonly playerId: PlayerId,
-  ) {}
+  constructor(public readonly gameId: GameId, public readonly playerId: PlayerId) {}
 }
 
 @CommandHandler(JoinGame)

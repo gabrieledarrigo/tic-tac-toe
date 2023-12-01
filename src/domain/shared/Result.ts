@@ -4,7 +4,7 @@
 export class Failure {
   private constructor(public readonly error: Error) {}
 
-  public isSuccess(): this is Success<any> {
+  public isSuccess(): this is Success<unknown> {
     return false;
   }
 
@@ -43,6 +43,7 @@ export class Success<T> {
     return this.value;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public unwrapOrElse<O>(_fn: (error: Error) => O): T {
     return this.unwrap();
   }

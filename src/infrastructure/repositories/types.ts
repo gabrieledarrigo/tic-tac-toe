@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 
-export type PlayerGetPayload = Prisma.PlayerGetPayload<{}>;
+export type PlayerGetPayload = Prisma.PlayerGetPayload<Record<string, never>>;
 
 export type GameGetPayload = Prisma.GameGetPayload<{
   include: {
@@ -8,4 +8,4 @@ export type GameGetPayload = Prisma.GameGetPayload<{
   };
 }>;
 
-export type MoveGetPayload = Prisma.MoveGetPayload<{}>;
+export type MoveGetPayload = Prisma.MoveGetPayload<Record<string, never>>;
